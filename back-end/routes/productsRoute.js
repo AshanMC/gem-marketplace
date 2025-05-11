@@ -5,7 +5,7 @@ import upload from '../config/fileUpload.js';
 
 const productRouter = exppress.Router();
 
-productRouter.post('/', isLoggedIn, createProductCtrl);
+productRouter.post('/', isLoggedIn, upload.array("files"), createProductCtrl);
 productRouter.get('/', getProductsCtrl);
 productRouter.get('/:id', getProductCtrl);
 productRouter.put('/:id', isLoggedIn, updateProductCtrl);

@@ -7,7 +7,7 @@ import { populate } from "dotenv";
  //POST /api/products
  //Private/Admin 
 export const createProductCtrl = asyncHandler(async(req, res)=>{
-   console.log(req.file);
+    console.log(req.files);
      const {name, weight, description, category, user, price, totalQty } =
       req.body;
       //product exists
@@ -33,6 +33,7 @@ export const createProductCtrl = asyncHandler(async(req, res)=>{
          user: req.userAuthId,
          price,
          totalQty,
+         images: req.files.map(file => file.path),
       });
       //push the product into category
       categoryFound.products.push(product._id);

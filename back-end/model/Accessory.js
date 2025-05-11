@@ -9,7 +9,7 @@ const AccessorySchema = new Schema({
     brand: { type: String },
     stockQty: { type: Number, required: true },
     soldQty: { type: Number, default: 0 },
-    images: [{ type: String }],
+    images: [{ type: String, required: true }],
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }]
 }, {

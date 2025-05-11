@@ -17,7 +17,7 @@ const UserShema = new Schema({
     orders: [
         {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "order",
+        ref: "Order",
         },
     
     ],

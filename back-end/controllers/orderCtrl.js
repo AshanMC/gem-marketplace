@@ -72,7 +72,7 @@ export const createOrderCtrl = asyncHandler(async(req, res) =>{
                 name: dbItem.name,
                 description: dbItem.description || "",
             },
-            unit_amount: parseInt(dbItem.price) * 100, // Convert to cents
+            unit_amount: parseInt(dbItem.price) * 100,
         },
         quantity: item.qty,
     };
@@ -112,16 +112,6 @@ export const getSingleOrder = asyncHandler(async(req, res)=>{
 })
 
 
-// Update order status (Admin)
-export const updateOrderStatusCtrl = asyncHandler(async (req, res) => {
-    const { status } = req.body;
-    const order = await Order.findByIdAndUpdate(req.params.id, { status }, { new: true });
-    res.json({
-        status: "success",
-        message: "Order status updated",
-        order,
-    });
-});
 
 // Cancel order (User/Admin)
 export const cancelOrderCtrl = asyncHandler(async (req, res) => {
@@ -129,5 +119,30 @@ export const cancelOrderCtrl = asyncHandler(async (req, res) => {
     res.json({
         status: "success",
         message: "Order cancelled",
+    });
+});
+
+//@desc update order to delivered
+//@route PUT /api/v1/orders/update/:id
+//@access pricate/admin
+
+
+export const updateOrderCtrl = asyncHandler(async (req, res) => {
+    const id = req.params.id;
+    const updatedOrder = await Order.findByIdAndUpdate(
+        id,
+        { status: req.body.status },
+        { new: true }
+    );
+
+    if (!updatedOrder) {
+        res.status(404);
+        throw new Error("Order not found");
+    }
+
+    res.status(200).json({
+        success: true,
+        message: "Order Updated",
+        updatedOrder,
     });
 });

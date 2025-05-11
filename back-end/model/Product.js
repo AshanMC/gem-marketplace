@@ -28,10 +28,10 @@ const ProductSchema = new Schema(
             required: true,
             ref: "User",
         },
-        Images: [
+        images: [
             {
                 type: String,
-                default: "https://pngimg.com/uploads/sapphire/sapphire_PNG8.png",
+                required: true,
             },
         ],
 

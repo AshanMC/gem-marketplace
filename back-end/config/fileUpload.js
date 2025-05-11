@@ -1,4 +1,6 @@
 import cloudinaryPackage from "cloudinary";
+import dotenv from "dotenv";
+dotenv.config();
 import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 
@@ -16,7 +18,7 @@ const storage = new CloudinaryStorage({
     cloudinary,
     allowFormats:['jpg', 'png', 'jpeg'],
     params:{
-        folder: "Gem Marketplace-api"
+        folder: "Gem Marketplace"
     },
 });
 

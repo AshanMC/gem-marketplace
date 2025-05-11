@@ -2,9 +2,10 @@ import asyncHandler from "express-async-handler";
 import Accessory from "../model/Accessory.js";
 
 export const createAccessoryCtrl = asyncHandler(async (req, res) => {
+    console.log(req.files);
     const { name, description, category, price, brand, stockQty } = req.body;
     const accessory = await Accessory.create({
-        name, description, category, price, brand, stockQty, user: req.userAuthId
+        name, description, category, price, brand, stockQty,images: req.files.map(file => file.path), user: req.userAuthId
     });
     res.json({ status: "success", message: "Accessory created", accessory });
 });
