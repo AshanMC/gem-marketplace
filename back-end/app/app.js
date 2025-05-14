@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config()
 import express from "express";
+import cors from "cors";
 import Stripe from "stripe";
 import dbConnect from "../config/dbConnect.js";
 import userRoutes from "../routes/usersRoute.js";
@@ -14,7 +15,8 @@ import Order from "../model/Order.js";
 //dbconnect
 dbConnect();
 const app = express();
-
+//cors
+app.use(cors());
 //Stripe webhook
 //stripe instance
 const stripe = new Stripe(process.env.STRIPE_KEY);

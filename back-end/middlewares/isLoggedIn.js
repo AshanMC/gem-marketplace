@@ -1,17 +1,29 @@
-import { getTokenFromHeader } from "../utils/getTokenFromHeader.js"
+import { getTokenFromHeader } from "../utils/getTokenFromHeader.js";
 import { verifyToken } from "../utils/verifyToken.js";
+import User from "../model/User.js";
 
-export const isLoggedIn =(req, res, next) =>{
-    //get token from header
+export const isLoggedIn = async (req, res, next) => {
+  try {
     const token = getTokenFromHeader(req);
-    //ferify the token
-    const decodedUser = verifyToken(token);
-    //save the user into req obj
-    if(!decodedUser){
-        throw new Error('Invalid/Expired token, please login again');
-    }else{
-        req.userAuthId = decodedUser?.id;
-        next()
+    const decoded = verifyToken(token);
+
+    if (!decoded || decoded === "Token expired/invalid") {
+      return next(new Error("Invalid or expired token, please login again"));
     }
-    
-}
+
+    // Find user in DB
+    const user = await User.findById(decoded.id).select("-password");
+
+    if (!user) {
+      return next(new Error("User not found"));
+    }
+
+    // Attach user to request
+    req.userAuthId = user._id;
+    req.user = user;
+
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
