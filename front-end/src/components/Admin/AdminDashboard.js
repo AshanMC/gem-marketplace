@@ -107,10 +107,56 @@ const productsLinks = [
   },
 ];
 
-const couponsLinks = [
+const accessoriesLinks = [
   {
-    name: "Add Coupon",
-    href: "add-coupon",
+  name: "Add Accessory",
+  href: "add-accessory",
+  icon: () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      className="w-6 h-6 m-1"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 4v16m8-8H4"
+      />
+    </svg>
+  ),
+  current: false,
+},
+{
+  name: "Manage Accessories",
+  href: "manage-accessories",
+  icon: () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      className="w-6 h-6 m-1"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M3 6h18M3 12h18M3 18h18"
+      />
+    </svg>
+  ),
+  current: false,
+}
+
+]
+
+const articlesLinks = [
+  {
+    name: "Add Article",
+    href: "add-article",
     icon: () => (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -128,8 +174,8 @@ const couponsLinks = [
     ),
   },
   {
-    name: "Manage Coupon",
-    href: "manage-coupon",
+    name: "Manage Articles",
+    href: "manage-articles",
     icon: () => (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -152,7 +198,7 @@ function classNames(...classes) {
 }
 
 const CategoryLinks = [
-  { name: "Add Category", href: "category-to-add", icon: CogIcon },
+  { name: "Add Category",href: "category-to-add", icon: CogIcon },
   {
     name: "Manage Category",
     href: "manage-category",
@@ -161,7 +207,7 @@ const CategoryLinks = [
 ];
 
 const colorsLinks = [
-  { name: "Add New Color", href: "add-color", icon: CogIcon },
+  { name: "Add ", href: "add-color", icon: CogIcon },
   {
     name: "All Colors",
     href: "all-colors",
@@ -275,7 +321,7 @@ export default function Example() {
                     </div>
                     <div className="mt-6 pt-6">
                       <div className="space-y-1 px-2">
-                        {couponsLinks.map((item) => (
+                        {articlesLinks.map((item) => (
                           <Link
                             key={item.name}
                             to={item.href}
@@ -326,7 +372,7 @@ export default function Example() {
                     {/* brands links mobile */}
                     <div className="mt-3 pt-3">
                       <div className="space-y-1 px-2">
-                        {brandsLinks.map((item) => (
+                        {accessoriesLinks.map((item) => (
                           <Link
                             key={item.name}
                             to={item.href}
@@ -398,7 +444,7 @@ export default function Example() {
               </div>
               <div className="mt-6 pt-6">
                 <div className="space-y-1 px-2">
-                  {couponsLinks.map((item) => (
+                  {articlesLinks.map((item) => (
                     <Link
                       key={item.name}
                       to={item.href}
@@ -449,7 +495,7 @@ export default function Example() {
               {/* brands links desktop */}
               <div className="mt-3 pt-3">
                 <div className="space-y-1 px-2">
-                  {brandsLinks.map((item) => (
+                  {accessoriesLinks.map((item) => (
                     <Link
                       key={item.name}
                       to={item.href}

@@ -2,18 +2,23 @@ import { createAsyncThunk, createSlice, } from '@reduxjs/toolkit';
 import axios from "axios";
 import baseURL from "../../../utils/baseURL.js";
 import { data } from 'autoprefixer';
+import { resetErrAction } from '../globalActions/globalAction.js';
 //initialState
+const userInfoFromStorage = localStorage.getItem("userInfo")
+  ? JSON.parse(localStorage.getItem("userInfo"))
+  : null;
+
 const initialState = {
+  loading: false,
+  error: null,
+  users: [],
+  user: {},
+  profile: {},
+  userAuth: {
     loading: false,
     error: null,
-    users: [],
-    user: {},
-    profile: {},
-    userAuth:{
-        loading: false,
-        error: null,
-        userInfo: {},
-    },
+    userInfo: userInfoFromStorage, // ✅ important
+  },
 };
 
 export const registerUserAction = createAsyncThunk(
@@ -36,22 +41,19 @@ export const registerUserAction = createAsyncThunk(
 
 //login action
 export const loginUserAction = createAsyncThunk(
-    "users/login", 
-    async ({ email, password }, {rejectWithValue, getState, dispatch}) => {
-        try {
-            //make the http request
-            const {data} = await axios.post(`${baseURL}/users/login`,{
-                email,
-                password,
-            });
-            //save the user into local storage
-            localStorage.setItem("userInfo", JSON.stringify(data));
-            return data;
-        } catch (error) {
-            console.log(error);
-            return rejectWithValue(error?.response?.data);
-        }
-    },
+  "users/login",
+  async ({ email, password }, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post(`${baseURL}/users/login`, {
+        email,
+        password,
+      });
+      localStorage.setItem("userInfo", JSON.stringify(data)); // ✅ must be here
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
 );
 
 
@@ -88,6 +90,10 @@ const usersSlice = createSlice({
             state.error = action.payload;
             state.loading = false;
         });
+        //reset error action
+        builder.addCase(resetErrAction.pending, (state)=>{
+            state.error = null;
+        }); 
     },
 });
 

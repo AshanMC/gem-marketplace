@@ -12,6 +12,8 @@ import reviewRouter from "../routes/reviewRouter.js";
 import orderRouter from "../routes/ordersRouter.js";
 import accessoryRouter from "../routes/accessoriesRouter.js";
 import Order from "../model/Order.js";
+import articleRouter from "../routes/articleRouter.js";
+
 //dbconnect
 dbConnect();
 const app = express();
@@ -79,6 +81,7 @@ app.use('/api/v1/categories/', categoriesRouter);
 app.use('/api/v1/reviews/', reviewRouter);
 app.use('/api/v1/orders/', orderRouter);
 app.use('/api/v1/accessories/', accessoryRouter);
+app.use("/api/v1/articles", articleRouter);
 
 
 

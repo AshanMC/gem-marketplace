@@ -1,41 +1,49 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCategoriesAction } from "../../redux/slices/categories/categorySlice";
 
 const HomeCategories = () => {
-  const categoriesToShow = [];
+  const dispatch = useDispatch();
+  const { categories = [], loading, error } = useSelector(
+    (state) => state?.categories || {}
+  );
+
+  useEffect(() => {
+    dispatch(fetchCategoriesAction());
+  }, [dispatch]);
+
+  if (loading) return <p className="text-center text-white">Loading categories...</p>;
+  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
 
   return (
-    <>
-      <div className="mt-4 flow-root">
-        <div className="-my-2">
-          <div className="relative box-content h-80 overflow-x-auto py-2 xl:overflow-visible">
-            <div className="min-w-screen-xl absolute flex space-x-8 px-4 sm:px-6 lg:px-8 xl:relative xl:grid xl:grid-cols-5 xl:gap-x-8 xl:space-x-0 xl:px-0">
-              {categoriesToShow?.map((category) => (
-                <Link
-                  key={category.name}
-                  to={`/products-filters?category=${category.name}`}
-                  className="relative flex h-80 w-56 flex-col overflow-hidden rounded-lg p-6 hover:opacity-75 xl:w-auto">
-                  <span aria-hidden="true" className="absolute inset-0">
-                    <img
-                      src={category.image}
-                      alt=""
-                      className="h-full w-full object-cover object-center"
-                    />
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-gray-800 opacity-50"
-                  />
-                  <span className="relative mt-auto text-center text-xl font-bold text-white">
-                    {category.name} ({category.products.length})
-                  </span>
-                </Link>
-              ))}
+    <section className="py-12 px-4 max-w-6xl mx-auto">
+      <h2 className="text-3xl font-bold text-center text-white mb-8">
+        Browse by Categories
+      </h2>
+
+      {Array.isArray(categories) && categories.length > 0 ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+          {categories.map((category) => (
+            <div
+              key={category._id}
+              className="bg-white/10 backdrop-blur-md text-white p-6 rounded-lg shadow hover:shadow-xl transition transform hover:scale-105"
+            >
+              {/* Optional image support */}
+              {category.image && (
+                <img
+                  src={category.image}
+                  alt={category.name}
+                  className="h-32 w-full object-cover rounded mb-3"
+                />
+              )}
+              <h3 className="text-lg font-semibold text-center">{category.name}</h3>
             </div>
-          </div>
+          ))}
         </div>
-      </div>
-    </>
+      ) : (
+        <p className="text-center text-gray-300">No categories available.</p>
+      )}
+    </section>
   );
 };
 

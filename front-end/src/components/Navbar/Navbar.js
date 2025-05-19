@@ -73,21 +73,21 @@ export default function Navbar() {
                   {categoriesToDisplay?.length <= 0 ? (
                     <>
                       <Link
-                        to= "products?category=cut and polished"
+                        to= "products?category=Products"
                         className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">
-                        Cut and Polished
+                        Products
+                      </Link>
+
+                      <Link
+                        to="/accessories"
+                        className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">
+                        Accessories
                       </Link>
 
                       <Link
                         to="/"
                         className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">
-                        Rough Gems
-                      </Link>
-
-                      <Link
-                        to="/"
-                        className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">
-                        Gems for Jewelry
+                        Articles
                       </Link>
                     </>
                   ) : (
@@ -136,7 +136,7 @@ export default function Navbar() {
       <header className="relative z-10">
         <nav aria-label="Top">
           {/* Top navigation  desktop*/}
-          <div className="bg-gray-900">
+          <div className="bg-gradient-to-r from-slate-400 to-black">
             <div className="mx-auto flex h-10 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
               <p className="flex-1 text-center text-sm font-medium text-white lg:flex-none">
                 Discover the Brilliance
@@ -186,19 +186,19 @@ export default function Navbar() {
                       <Link
                         to= "products?category=cut and polished"
                         className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">
-                        Cut and Polished
+                        Products
+                      </Link>
+
+                      <Link
+                        to="/accessories"
+                        className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">
+                        Accessories
                       </Link>
 
                       <Link
                         to="/"
                         className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">
-                        Rough Gems
-                      </Link>
-
-                      <Link
-                        to="/"
-                        className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">
-                        Gems for Jewelry
+                        Articles
                       </Link>
                           </>
                         ) : (

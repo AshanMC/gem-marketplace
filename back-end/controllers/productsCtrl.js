@@ -11,10 +11,13 @@ export const createProductCtrl = asyncHandler(async(req, res)=>{
      const {name, weight, description, category, user, price, totalQty } =
       req.body;
       //product exists
-      const productExists = await Product.findOne({ name });
-      if(productExists){
-         throw new Error("Product Already Exists");
-      }
+     const productExists = await Product.findOne({ name });
+      if (productExists) {
+         return res.status(400).json({
+         status: "fail",
+         message: "Product Already Exists",
+  });
+}
       //find the category
       const categoryFound = await Category.findOne({
        name: category,

@@ -2,13 +2,37 @@ import asyncHandler from "express-async-handler";
 import Accessory from "../model/Accessory.js";
 
 export const createAccessoryCtrl = asyncHandler(async (req, res) => {
-    console.log(req.files);
-    const { name, description, category, price, brand, stockQty } = req.body;
+  console.log("📥 Body:", req.body);
+  console.log("📸 Files:", req.files);
+  console.log("👤 User:", req.userAuthId);
+
+  try {
+    const { name, description, price, stockQty } = req.body;
+
     const accessory = await Accessory.create({
-        name, description, category, price, brand, stockQty,images: req.files.map(file => file.path), user: req.userAuthId
+      name,
+      description,
+      price,
+      stockQty,
+      images: req.files.map((file) => file.path),
+      user: req.userAuthId,
     });
-    res.json({ status: "success", message: "Accessory created", accessory });
+
+    console.log("✅ Accessory created:", accessory);
+    res.status(201).json({
+      status: "success",
+      message: "Accessory created",
+      accessory,
+    });
+  } catch (error) {
+    console.error("❌ Error creating accessory:", error.message);
+    res.status(500).json({
+      status: "fail",
+      message: error.message || "Internal Server Error",
+    });
+  }
 });
+
 
 export const getAccessoriesCtrl = asyncHandler(async (req, res) => {
     const accessories = await Accessory.find();
@@ -21,9 +45,9 @@ export const getAccessoryCtrl = asyncHandler(async (req, res) => {
 });
 
 export const updateAccessoryCtrl = asyncHandler(async (req, res) => {
-    const { name, description, category, price, brand, stockQty } = req.body;
+    const { name, description, price, stockQty } = req.body;
     const accessory = await Accessory.findByIdAndUpdate(req.params.id, {
-        name, description, category, price, brand, stockQty
+        name, description, price, stockQty
     }, { new: true });
     res.json({ status: "success", accessory });
 });

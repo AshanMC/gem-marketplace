@@ -4,9 +4,7 @@ const Schema = mongoose.Schema;
 const AccessorySchema = new Schema({
     name: { type: String, required: true },
     description: { type: String, required: true },
-    category: { type: String, ref: "Category", required: true },
     price: { type: Number, required: true },
-    brand: { type: String },
     stockQty: { type: Number, required: true },
     soldQty: { type: Number, default: 0 },
     images: [{ type: String, required: true }],
