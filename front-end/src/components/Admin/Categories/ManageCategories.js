@@ -1,69 +1,73 @@
-import React from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchCategoriesAction,
+  deleteCategoryAction,
+} from "../../../redux/slices/categories/categorySlice";
 import { Link } from "react-router-dom";
 
-const ManageCategory = ({ categories = [] }) => {
+export default function ManageCategories() {
+  const dispatch = useDispatch();
+  const { categories, loading, error } = useSelector((state) => state.categories);
+
+  useEffect(() => {
+    dispatch(fetchCategoriesAction());
+  }, [dispatch]);
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this category?")) {
+      dispatch(deleteCategoryAction(id)).then(() => {
+        dispatch(fetchCategoriesAction());
+      });
+    }
+  };
+
   return (
-    <div className="max-w-6xl mx-auto bg-white p-8 mt-10 rounded-2xl shadow-lg border">
-      <h2 className="text-3xl font-semibold text-center text-purple-700 mb-6">
-        Manage Categories
-      </h2>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6">Manage Categories</h1>
 
-      {categories.length === 0 ? (
-        <div className="text-center text-gray-500 py-10">
-          No categories found. Please add one.
-        </div>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full table-auto text-sm border border-gray-200 rounded-lg overflow-hidden shadow-md">
-            <thead className="bg-purple-600 text-white">
-              <tr>
-                <th className="px-5 py-3 text-left">Image</th>
-                <th className="px-5 py-3 text-left">Name</th>
-                <th className="px-5 py-3 text-left">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-100">
-              {categories.map((category) => (
-                <tr key={category._id} className="hover:bg-gray-50 transition-all">
-                  <td className="px-5 py-3">
-                    <img
-                      src={category.image || "https://via.placeholder.com/60"}
-                      alt={category.name}
-                      className="w-14 h-14 object-cover rounded shadow"
-                    />
-                  </td>
-                  <td className="px-5 py-3 font-medium text-gray-800">
-                    {category.name}
-                  </td>
-                  <td className="px-5 py-3 space-x-2">
-                    <Link
-                      to={`/admin/categories/edit/${category._id}`}
-                      className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1.5 rounded-md transition"
-                    >
-                      Edit
-                    </Link>
-                    <button
-                      onClick={() => alert("Delete category")}
-                      className="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded-md transition"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {loading && <p>Loading categories...</p>}
+      {error && <p className="text-red-500">{error}</p>}
 
-          {/* Optional: Pagination */}
-          <div className="mt-6 text-right">
-            <button className="bg-purple-600 text-white px-5 py-2 rounded hover:bg-purple-700">
-              Load More
-            </button>
-          </div>
-        </div>
-      )}
+      <table className="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden shadow">
+        <thead className="bg-gray-100 text-gray-700">
+          <tr>
+            <th className="text-left px-6 py-3">Image</th>
+            <th className="text-left px-6 py-3">Name</th>
+            <th className="text-left px-6 py-3">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {categories.map((cat) => (
+            <tr key={cat._id} className="border-t">
+              <td className="px-6 py-4">
+                {cat.image && (
+              <img
+                src={cat.image}
+                alt={cat.name}
+                className="h-16 w-24 object-cover rounded"
+              />
+            )};
+              </td>
+              <td className="px-6 py-4 font-semibold">{cat.name}</td>
+              <td className="px-6 py-4 space-x-4">
+                <Link
+                  to={`/admin/edit-category/${cat._id}`}
+                  className="text-blue-600 hover:underline font-medium"
+                >
+                  Edit
+                </Link>
+                <button
+                  onClick={() => handleDelete(cat._id)}
+                  className="text-red-600 hover:underline font-medium"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
-};
-
-export default ManageCategory;
+}

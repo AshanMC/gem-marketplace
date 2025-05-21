@@ -1,106 +1,189 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchAccessoriesAction } from "../../../redux/slices/accessories/accessorySlice";
-import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 import Navbar from "../../Navbar/Navbar";
 import { motion } from "framer-motion";
+import baseURL from "../../../utils/baseURL";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../../../redux/slices/Cart/cartSlice";
+import { createAccessoryReviewAction } from "../../../redux/slices/accessories/accessorySlice";
+import Swal from "sweetalert2";
 
-const Accessories = () => {
+const Accessory = () => {
+  const { id } = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [accessory, setAccessory] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [reviewMsg, setReviewMsg] = useState("");
+  const [rating, setRating] = useState(5);
+  const [refresh, setRefresh] = useState(false);
 
-  const { accessories = [], loading, error } = useSelector(
-    (state) => state.accessories || {}
-  );
-
-  const [maxPrice, setMaxPrice] = useState(1000000);
+  const user = useSelector((state) => state.users?.userAuth?.userInfo);
 
   useEffect(() => {
-    dispatch(fetchAccessoriesAction());
-  }, [dispatch]);
+    const fetchAccessory = async () => {
+      try {
+        const { data } = await axios.get(`${baseURL}/accessories/${id}`);
+        setAccessory(data?.accessory);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching accessory:", error);
+        setLoading(false);
+      }
+    };
 
-  const handlePriceChange = (e) => {
-    setMaxPrice(+e.target.value);
+    fetchAccessory();
+  }, [id, refresh]);
+
+  const handleAddToCart = () => {
+    const item = {
+      _id: accessory._id,
+      name: accessory.name,
+      price: accessory.price,
+      image: accessory.images?.[0],
+      qtyLeft: accessory.stockQty,
+    };
+    dispatch(addToCart(item));
   };
 
-  const handleClearFilters = () => {
-    setMaxPrice(1000000);
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    if (!user) {
+      Swal.fire("Please login to leave a review");
+      return;
+    }
+
+    try {
+      await dispatch(
+        createAccessoryReviewAction({
+          accessoryID: accessory._id,
+          message: reviewMsg,
+          rating,
+        })
+      ).unwrap();
+
+      Swal.fire({
+        icon: "success",
+        title: "Review submitted!",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+      setReviewMsg("");
+      setRating(5);
+      setRefresh(!refresh);
+    } catch (err) {
+      Swal.fire("Error", err.message || "Review failed", "error");
+    }
   };
 
-  const filteredAccessories = accessories.filter(
-    (acc) => acc.price <= maxPrice
-  );
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        Loading accessory details...
+      </div>
+    );
+  }
+
+  if (!accessory) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        Accessory not found.
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-gradient-to-b from-white to-black min-h-screen text-white pt-24 pb-10">
+    <div className="bg-gradient-to-b from-white to-black min-h-screen text-white">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-bold text-center mb-10">Accessories</h1>
+      <div className="max-w-6xl mx-auto px-4 pt-28 pb-16">
+        <motion.div
+          className="grid md:grid-cols-2 gap-10 items-center"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <img
+            src={accessory.images?.[0]}
+            alt={accessory.name}
+            className="w-full rounded-lg shadow-lg object-cover max-h-[500px]"
+          />
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
-          {/* Sidebar Filters */}
-          <div className="bg-white/10 backdrop-blur p-6 rounded-xl shadow-lg">
-            <h2 className="text-xl font-semibold mb-4">Filters</h2>
-            <div className="mb-6">
-              <label className="block text-sm mb-1">Max Price: Rs.{maxPrice}</label>
-              <input
-                type="range"
-                min="0"
-                max="1000000"
-                value={maxPrice}
-                onChange={handlePriceChange}
-                className="w-full"
-              />
-            </div>
+          <div>
+            <h1 className="text-4xl font-bold text-orange-400 mb-4">{accessory.name}</h1>
+            <p className="text-lg text-gray-300 mb-4">{accessory.description}</p>
+            <p className="text-xl text-white font-semibold mb-2">Price: Rs.{accessory.price}</p>
+            <p className="text-md text-gray-400 mb-6">Stock Available: {accessory.stockQty}</p>
+
             <button
-              onClick={handleClearFilters}
-              className="mt-4 bg-red-500 hover:bg-red-600 w-full text-white py-2 rounded"
+              onClick={handleAddToCart}
+              className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-6 rounded-lg shadow-md transition"
             >
-              Clear Filters
+              Add to Cart
             </button>
           </div>
+        </motion.div>
 
-          {/* Accessories List */}
-          <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-            {loading ? (
-              <p className="text-white">Loading...</p>
-            ) : error ? (
-              <p className="text-red-500">{error}</p>
-            ) : filteredAccessories.length === 0 ? (
-              <p className="text-white col-span-3 text-center">No accessories found.</p>
-            ) : (
-              filteredAccessories.map((item) => (
-                <motion.div
-                  key={item._id}
-                  className="bg-white/10 backdrop-blur-md p-4 rounded-xl shadow hover:shadow-xl transition"
-                  whileHover={{ scale: 1.03 }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
+        {/* Reviews Section */}
+        <div className="mt-16 bg-white text-gray-800 p-8 rounded-lg shadow-xl">
+          <h3 className="text-3xl font-bold mb-6 text-center text-indigo-700">
+            Customer Reviews
+          </h3>
+
+          {accessory.reviews?.length > 0 ? (
+            <div className="space-y-6 mb-8">
+              {accessory.reviews.map((review, index) => (
+                <div
+                  key={index}
+                  className="bg-gray-100 p-4 rounded-lg border border-gray-200 shadow-sm"
                 >
-                  <img
-                    src={item?.images?.[0]}
-                    alt={item.name}
-                    className="w-full h-52 object-cover rounded-md mb-4"
-                  />
-                  <h3 className="text-lg font-bold text-white mb-1">{item.name}</h3>
-                  <p className="text-orange-400 font-semibold text-lg">Rs.{item.price}</p>
+                  <div className="font-semibold text-yellow-600">⭐ {review.rating}/5</div>
+                  <p className="text-gray-700 mt-1">{review.message}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-gray-500 mb-8">No reviews yet.</p>
+          )}
 
-                  <button
-                    onClick={() => navigate(`/accessories/${item._id}`)}
-                    className="mt-3 bg-purple-600 hover:bg-purple-700 w-full py-2 text-white rounded transition"
-                  >
-                    View Details
-                  </button>
-                </motion.div>
-              ))
-            )}
-          </div>
+          <form
+            onSubmit={handleReviewSubmit}
+            className="space-y-4 bg-indigo-50 p-6 rounded-lg"
+          >
+            <h4 className="text-lg font-semibold text-indigo-800 mb-2">
+              Leave a Review
+            </h4>
+            <textarea
+              required
+              placeholder="Write your review here..."
+              className="w-full p-3 border border-indigo-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 shadow-sm"
+              value={reviewMsg}
+              onChange={(e) => setReviewMsg(e.target.value)}
+            />
+            <select
+              value={rating}
+              onChange={(e) => setRating(e.target.value)}
+              className="w-full border border-indigo-300 rounded-md px-3 py-2 shadow-sm focus:ring-indigo-400 focus:outline-none"
+            >
+              {[5, 4, 3, 2, 1].map((r) => (
+                <option key={r} value={r}>
+                  {r} Star{r > 1 && "s"}
+                </option>
+              ))}
+            </select>
+            <div className="text-center">
+              <button
+                type="submit"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2 rounded-md transition shadow-lg"
+              >
+                Submit Review
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
   );
 };
 
-export default Accessories;
+export default Accessory;

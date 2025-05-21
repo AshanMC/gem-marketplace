@@ -3,9 +3,13 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import baseURL from "../../../utils/baseURL";
 import { motion } from "framer-motion";
+import Navbar from "../../Navbar/Navbar";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../../redux/slices/Cart/cartSlice";
 
 const Product = () => {
   const { id } = useParams();
+  const dispatch = useDispatch();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -25,6 +29,17 @@ const Product = () => {
     fetchProduct();
   }, [id]);
 
+  const handleAddToCart = () => {
+    const item = {
+      _id: product._id,
+      name: product.name,
+      price: product.price,
+      image: product?.images?.[0],
+      qtyLeft: product.totalQty,
+    };
+    dispatch(addToCart(item));
+  };
+
   if (loading)
     return <div className="text-center py-20 text-lg text-white">Loading...</div>;
 
@@ -33,6 +48,7 @@ const Product = () => {
 
   return (
     <div className="bg-gradient-to-b from-purple-50 to-black min-h-screen text-white">
+      <Navbar />
       <div className="max-w-6xl mx-auto px-6 py-12">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -80,6 +96,7 @@ const Product = () => {
             </p>
 
             <motion.button
+              onClick={handleAddToCart}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 200, damping: 15 }}

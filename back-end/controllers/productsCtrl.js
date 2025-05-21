@@ -152,24 +152,48 @@ export const getProductCtrl = asyncHandler(async(req, res)=>{
 // @route PUT /api/products/:id/update
 // @access private/admin
 
-export const updateProductCtrl = asyncHandler(async(req, res)=>{
-   const {name, weight, description, category, user, price, totalQty} =
-   req.body;
 
-   //update
-   const product = await Product.findByIdAndUpdate(req.params.id, {
-      name, weight, description, category, user, price, totalQty
-   },
-   {
-      new: true,
-   }
-);
-   res.json({
-      status: "success",
-      message: "Product updated successfully",
-     product,
-   });
-});
+export const updateProductCtrl = async (req, res) => {
+  try {
+    const { name, price, description, category } = req.body;
+
+    // Handle existing image URLs
+    let existingImages = [];
+    if (req.body.existingImages) {
+      if (typeof req.body.existingImages === "string") {
+        existingImages = [req.body.existingImages]; // single string
+      } else {
+        existingImages = req.body.existingImages; // array of strings
+      }
+    }
+
+    // Handle newly uploaded image files
+    const uploadedImages = req.files?.map(file => file.path) || [];
+
+    const finalImages = [...existingImages, ...uploadedImages];
+    const id = req.params.id.trim();
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params.id,
+      {
+        name,
+        price,
+        description,
+        category,
+        images: finalImages,
+      },
+      { new: true }
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.status(200).json({ message: "Product updated", product: updatedProduct });
+  } catch (error) {
+    console.error("❌ Update failed:", error);
+    res.status(500).json({ message: "Failed to update product", error: error.message });
+  }
+};
 
 // @desc delete product
 // @route delete /api/products/:id/delete

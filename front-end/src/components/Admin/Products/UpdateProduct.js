@@ -1,169 +1,194 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import axios from "axios";
 import baseURL from "../../../utils/baseURL";
 import { toast } from "react-toastify";
+import { updateProductAction } from "../../../redux/slices/products/productSlice";
+import Swal from "sweetalert2";
+import "react-toastify/dist/ReactToastify.css";
 
-const UpdateProduct = () => {
+export default function UpdateProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     name: "",
-    category: "",
     price: "",
     weight: "",
     totalQty: "",
     description: "",
+    category: "",
+    images: [],
   });
+  const [imagePreview, setImagePreview] = useState([]);
 
-  const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  const token = userInfo?.token;
-
-  // Fetch product details
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const { data } = await axios.get(`${baseURL}/products/${id}`);
+        const { data } = await axios.get(`${baseURL}/products/${id.trim()}`);
+        const product = data.product;
         setFormData({
-          name: data.name,
-          category: data.category,
-          price: data.price,
-          weight: data.weight,
-          totalQty: data.totalQty,
-          description: data.description,
+          name: product.name || "",
+          price: product.price || 0,
+          weight: product.weight || "",
+          totalQty: product.totalQty || "",
+          description: product.description || "",
+          category: product.category || "",
+          images: product.images || [],
         });
+        setImagePreview(product.images || []);
       } catch (err) {
-        toast.error("Failed to load product.");
+        toast.error("❌ Failed to load product data");
       }
     };
     fetchProduct();
   }, [id]);
 
-  // Handle change
-  const handleChange = (e) =>
+  const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const handleFileChange = (e) => {
-    setImages(Array.from(e.target.files));
   };
 
-  // Submit update
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    setFormData({ ...formData, images: files });
+    setImagePreview(files.map((file) => URL.createObjectURL(file)));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
-    const data = new FormData();
-    data.append("name", formData.name);
-    data.append("category", formData.category);
-    data.append("price", formData.price);
-    data.append("weight", formData.weight);
-    data.append("totalQty", formData.totalQty);
-    data.append("description", formData.description);
-    images.forEach((img) => data.append("files", img));
-
     try {
-      await axios.put(`${baseURL}/products/${id}`, data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
+      const form = new FormData();
+      form.append("name", formData.name);
+      form.append("price", formData.price);
+      form.append("weight", formData.weight);
+      form.append("totalQty", formData.totalQty);
+      form.append("description", formData.description);
+      form.append("category", formData.category);
+
+      formData.images.forEach((img) => {
+        if (typeof img === "object") {
+          form.append("files", img); // multer expects "files"
+        } else {
+          form.append("existingImages", img);
+        }
       });
-      toast.success("✅ Product updated successfully");
-      navigate("/admin/products");
+
+      await dispatch(updateProductAction({ id: id.trim(), formData: form })).unwrap();
+
+      // ✅ SweetAlert success popup
+      Swal.fire({
+        title: "Success!",
+        text: "Product updated successfully.",
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then(() => {
+        navigate("/admin/manage-products");
+      });
+
     } catch (err) {
       toast.error("❌ Failed to update product");
-    } finally {
-      setLoading(false);
+      console.error(err);
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-8 mt-10 bg-white rounded-2xl shadow-lg border">
-      <h2 className="text-3xl font-semibold text-center text-purple-700 mb-6">
-        Update Product
-      </h2>
+    <div className="max-w-3xl mx-auto p-6 bg-white rounded-xl shadow-md mt-6">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-6">Update Product</h2>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div>
+          <label className="block mb-1 font-medium text-gray-700">Product Name</label>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            className="w-full border border-gray-300 px-4 py-2 rounded-md"
+          />
+        </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
-        <input
-          type="text"
-          name="name"
-          placeholder="Product Name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-          className="w-full p-3 border border-gray-300 rounded-md"
-        />
+        <div>
+          <label className="block mb-1 font-medium text-gray-700">Price (LKR)</label>
+          <input
+            type="number"
+            name="price"
+            value={formData.price}
+            onChange={handleChange}
+            className="w-full border border-gray-300 px-4 py-2 rounded-md"
+          />
+        </div>
 
-        <input
-          type="text"
-          name="category"
-          placeholder="Category"
-          value={formData.category}
-          onChange={handleChange}
-          required
-          className="w-full p-3 border border-gray-300 rounded-md"
-        />
+        <div>
+          <label className="block mb-1 font-medium text-gray-700">Weight</label>
+          <input
+            type="text"
+            name="weight"
+            value={formData.weight}
+            onChange={handleChange}
+            className="w-full border border-gray-300 px-4 py-2 rounded-md"
+          />
+        </div>
 
-        <input
-          type="number"
-          name="price"
-          placeholder="Price (Rs)"
-          value={formData.price}
-          onChange={handleChange}
-          required
-          className="w-full p-3 border border-gray-300 rounded-md"
-        />
+        <div>
+          <label className="block mb-1 font-medium text-gray-700">Total Quantity</label>
+          <input
+            type="number"
+            name="totalQty"
+            value={formData.totalQty}
+            onChange={handleChange}
+            className="w-full border border-gray-300 px-4 py-2 rounded-md"
+          />
+        </div>
 
-        <input
-          type="number"
-          name="weight"
-          placeholder="Weight (carats)"
-          value={formData.weight}
-          onChange={handleChange}
-          required
-          className="w-full p-3 border border-gray-300 rounded-md"
-        />
+        <div>
+          <label className="block mb-1 font-medium text-gray-700">Description</label>
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            rows="4"
+            className="w-full border border-gray-300 px-4 py-2 rounded-md"
+          ></textarea>
+        </div>
 
-        <input
-          type="number"
-          name="totalQty"
-          placeholder="Total Quantity"
-          value={formData.totalQty}
-          onChange={handleChange}
-          required
-          className="w-full p-3 border border-gray-300 rounded-md"
-        />
+        <div>
+          <label className="block mb-1 font-medium text-gray-700">Category</label>
+          <input
+            type="text"
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            className="w-full border border-gray-300 px-4 py-2 rounded-md"
+          />
+        </div>
 
-        <textarea
-          name="description"
-          rows={4}
-          placeholder="Product Description"
-          value={formData.description}
-          onChange={handleChange}
-          className="w-full p-3 border border-gray-300 rounded-md"
-        />
-
-        <input
-          type="file"
-          name="files"
-          onChange={handleFileChange}
-          multiple
-          className="w-full p-2 border border-gray-300 rounded-md"
-        />
+        <div>
+          <label className="block mb-1 font-medium text-gray-700">Images</label>
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleImageChange}
+            className="w-full border border-gray-300 px-3 py-2 rounded-md file:bg-blue-500 file:text-white"
+          />
+          <div className="flex flex-wrap gap-4 mt-3">
+            {imagePreview.map((img, index) => (
+              <img
+                key={index}
+                src={img}
+                alt="Preview"
+                className="h-20 w-20 rounded-md object-cover border"
+              />
+            ))}
+          </div>
+        </div>
 
         <button
           type="submit"
-          disabled={loading}
-          className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-md font-semibold"
-        >
-          {loading ? "Updating..." : "Update Product"}
+          className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition">
+          Update Product
         </button>
       </form>
     </div>
   );
-};
-
-export default UpdateProduct;
+}

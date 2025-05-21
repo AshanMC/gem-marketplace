@@ -11,9 +11,12 @@ const ReviewSchema = new Schema (
         },
 
         product: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Product",
-            required:[ true, "Review must belong to a product"],
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+        },
+        accessory: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Accessory",
         },
         message: {
             type: String,

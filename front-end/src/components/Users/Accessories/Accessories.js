@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAccessoriesAction } from "../../../redux/slices/accessories/accessorySlice";
+import { addToCart } from "../../../redux/slices/Cart/cartSlice";
 import { motion } from "framer-motion";
 import Navbar from "../../Navbar/Navbar";
+import { useNavigate } from "react-router-dom";
 
 const Accessories = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { accessories = [], loading, error } = useSelector((state) => state.accessories || {});
-
   const [priceRange, setPriceRange] = useState([0, 1000000]);
 
   useEffect(() => {
@@ -21,6 +23,19 @@ const Accessories = () => {
 
   const clearFilters = () => {
     setPriceRange([0, 1000000]);
+  };
+
+  const handleAddToCart = (item) => {
+    dispatch(
+      addToCart({
+        _id: item._id,
+        name: item.name,
+        price: item.price,
+        image: item.images?.[0],
+        type: "accessory",
+        qtyLeft: item.totalQty,
+      })
+    );
   };
 
   const filteredAccessories = accessories.filter(
@@ -97,6 +112,18 @@ const Accessories = () => {
                   <h3 className="text-lg font-bold text-white mb-1">{item.name}</h3>
                   <p className="text-sm text-gray-300 mb-2">{item.description}</p>
                   <p className="text-orange-400 font-semibold text-lg">Rs.{item.price}</p>
+                  <button
+                    onClick={() => navigate(`/accessories/${item._id}`)}
+                    className="mt-3 bg-purple-600 hover:bg-purple-700 w-full py-2 text-white rounded transition"
+                  >
+                    View Details
+                  </button>
+                  <button
+                    onClick={() => handleAddToCart(item)}
+                    className="mt-2 bg-green-600 hover:bg-green-700 w-full py-2 text-white rounded"
+                  >
+                    Add to Cart
+                  </button>
                 </motion.div>
               ))
             )}

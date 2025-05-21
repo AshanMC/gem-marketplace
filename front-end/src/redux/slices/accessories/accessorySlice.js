@@ -34,6 +34,62 @@ export const fetchAccessoriesAction = createAsyncThunk(
     }
   }
 );
+export const deleteAccessoryAction = createAsyncThunk(
+  "accessories/delete",
+  async (id, { rejectWithValue, getState }) => {
+    try {
+      const token = getState()?.users?.userAuth?.userInfo?.token;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const { data } = await axios.delete(`${baseURL}/accessories/${id}`, config);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to delete accessory");
+    }
+  }
+);
+export const updateAccessoryAction = createAsyncThunk(
+  "accessories/update",
+  async ({ id, formData }, { rejectWithValue, getState }) => {
+    try {
+      const token = getState()?.users?.userAuth?.userInfo?.token;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      };
+      const { data } = await axios.put(`${baseURL}/accessories/${id}`, formData, config);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to update accessory");
+    }
+  }
+);
+export const createAccessoryReviewAction = createAsyncThunk(
+  "accessories/review",
+  async ({ accessoryID, message, rating }, { rejectWithValue, getState }) => {
+    try {
+      const token = getState()?.users?.userAuth?.userInfo?.token;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const { data } = await axios.post(
+        `${baseURL}/reviews/accessory/${accessoryID}`,
+        { message, rating },
+        config
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Review failed");
+    }
+  }
+);
 
 const accessorySlice = createSlice({
   name: "accessories",
@@ -75,7 +131,27 @@ const accessorySlice = createSlice({
       .addCase(fetchAccessoriesAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      .addCase(deleteAccessoryAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteAccessoryAction.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(deleteAccessoryAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateAccessoryAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateAccessoryAction.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(updateAccessoryAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
   },
 });
 

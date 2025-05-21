@@ -1,4 +1,7 @@
-import { Fragment, useState } from "react";
+import { Fragment, useState ,useEffect } from "react";
+import ManageProducts from "./Products/ManageProducts";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProductsAction, deleteProductAction } from "../../redux/slices/products/productSlice";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import { Link, Outlet } from "react-router-dom";
 import {
@@ -15,7 +18,29 @@ import {
   UserGroupIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import logo from "../Navbar/logo3.png";
+import logo from "../Navbar/Navlogo.png";
+const AdminDashboard = () => {
+  const dispatch = useDispatch();
+  const { products } = useSelector((state) => state.products);
+
+  useEffect(() => {
+    dispatch(fetchProductsAction());
+  }, [dispatch]);
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      dispatch(deleteProductAction(id)).then(() => {
+        dispatch(fetchProductsAction());
+      });
+    }
+  };
+
+  return (
+    <>
+      <Outlet />
+    </>
+  );
+};
 const ordersLinks = [
   {
     name: "Dashboard",
@@ -100,11 +125,11 @@ const productsLinks = [
   },
 
   {
-    name: "Manage Stock",
-    href: "manage-products",
-    icon: ScaleIcon,
-    current: false,
-  },
+  name: "Manage Products",
+  href: "manage-products",
+  icon: ScaleIcon,
+  current: false,
+}
 ];
 
 const accessoriesLinks = [
@@ -198,7 +223,7 @@ function classNames(...classes) {
 }
 
 const CategoryLinks = [
-  { name: "Add Category",href: "category-to-add", icon: CogIcon },
+  { name: "Add Category",href: "add-category", icon: CogIcon },
   {
     name: "Manage Category",
     href: "manage-category",
@@ -206,23 +231,6 @@ const CategoryLinks = [
   },
 ];
 
-const colorsLinks = [
-  { name: "Add ", href: "add-color", icon: CogIcon },
-  {
-    name: "All Colors",
-    href: "all-colors",
-    icon: QuestionMarkCircleIcon,
-  },
-];
-
-const brandsLinks = [
-  { name: "Add New Brand", href: "add-brand", icon: CogIcon },
-  {
-    name: "All Brands",
-    href: "all-brands",
-    icon: QuestionMarkCircleIcon,
-  },
-];
 
 export default function Example() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -354,20 +362,6 @@ export default function Example() {
                     </div>
                     {/* colors links mobile */}
                     <div className="mt-3 pt-3">
-                      <div className="space-y-1 px-2">
-                        {colorsLinks.map((item) => (
-                          <Link
-                            key={item.name}
-                            to={item.href}
-                            className="group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-cyan-100 hover:bg-cyan-600 hover:text-white">
-                            <item.icon
-                              className="mr-4 h-6 w-6 text-cyan-200"
-                              aria-hidden="true"
-                            />
-                            {item.name}
-                          </Link>
-                        ))}
-                      </div>
                     </div>
                     {/* brands links mobile */}
                     <div className="mt-3 pt-3">
@@ -477,20 +471,6 @@ export default function Example() {
               </div>
               {/* colors links desktop */}
               <div className="mt-3 pt-3">
-                <div className="space-y-1 px-2">
-                  {colorsLinks.map((item) => (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      className="group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-cyan-100 hover:bg-cyan-600 hover:text-white">
-                      <item.icon
-                        className="mr-4 h-6 w-6 text-cyan-200"
-                        aria-hidden="true"
-                      />
-                      {item.name}
-                    </Link>
-                  ))}
-                </div>
               </div>
               {/* brands links desktop */}
               <div className="mt-3 pt-3">
@@ -550,49 +530,37 @@ export default function Example() {
                         <dl className="mt-6 flex flex-col sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
                           <dd className="flex items-center text-sm font-medium capitalize text-gray-500 sm:mr-6">
                             {/* Role */}
-                            <svg
-                              class="w-6 h-6"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                              xmlns="http://www.w3.org/2000/svg">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                               <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                              />
                             </svg>
                             Role: Admin
                           </dd>
                           {/* Date Joined */}
                           <dd className="mt-3 flex items-center text-sm font-medium capitalize text-gray-500 sm:mr-6 sm:mt-0">
-                            <svg
-                              className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                              xmlns="http://www.w3.org/2000/svg">
+                            <svg className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                               <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                              />
                             </svg>
                             Date Joined: 12/12/2020
                           </dd>
                           {/* email */}
                           <dd className="mt-3 flex items-center text-sm font-medium  text-gray-500 sm:mr-6 sm:mt-0">
-                            <svg
-                              className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                              xmlns="http://www.w3.org/2000/svg">
+                            <svg className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                               <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
+                              />
                             </svg>
                             admin@gmail.com
                           </dd>
@@ -622,4 +590,4 @@ export default function Example() {
       </div>
     </>
   );
-}
+};

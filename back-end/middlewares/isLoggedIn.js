@@ -6,8 +6,7 @@ export const isLoggedIn = async (req, res, next) => {
   try {
     const token = getTokenFromHeader(req);
     const decoded = verifyToken(token);
-
-    if (!decoded || decoded === "Token expired/invalid") {
+    if (!decoded) {
       return next(new Error("Invalid or expired token, please login again"));
     }
 

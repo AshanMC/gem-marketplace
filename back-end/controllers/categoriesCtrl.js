@@ -16,6 +16,7 @@ export const createCategoryCtrl = asyncHandler(async(req, res)=>{
     const category = await Category.create({
         name: name.toLowerCase(),
         user: req.userAuthId,
+        image: req.file?.path,
     });
 
     res.json({
@@ -71,11 +72,11 @@ export const updateCategoryCtrl = asyncHandler(async(req, res)=>{
       new: true,
    }
 );
-   res.json({
-      status: "success",
-      message: "Category updated successfully",
-     product,
-   });
+    res.json({
+        status: "success",
+        message: "Category updated successfully",
+        category,
+    });
 });
 
 // @desc delete category

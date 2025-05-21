@@ -32,6 +32,40 @@ export const fetchCategoriesAction = createAsyncThunk(
     }
   }
 );
+export const deleteCategoryAction = createAsyncThunk(
+  "categories/delete",
+  async (id, { rejectWithValue, getState }) => {
+    try {
+      const token = getState()?.users?.userAuth?.userInfo?.token;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const { data } = await axios.delete(`${baseURL}/categories/${id}`, config);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to delete category");
+    }
+  }
+);
+export const updateCategoryAction = createAsyncThunk(
+  "categories/update",
+  async ({ id, name }, { rejectWithValue, getState }) => {
+    try {
+      const token = getState()?.users?.userAuth?.userInfo?.token;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const { data } = await axios.put(`${baseURL}/categories/${id}`, { name }, config);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to update category");
+    }
+  }
+);
 
 const categorySlice = createSlice({
   name: "categories",
@@ -75,7 +109,27 @@ const categorySlice = createSlice({
       .addCase(fetchCategoriesAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-});
+      })
+      .addCase(deleteCategoryAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteCategoryAction.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(deleteCategoryAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateCategoryAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateCategoryAction.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(updateCategoryAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
   },
 });
 

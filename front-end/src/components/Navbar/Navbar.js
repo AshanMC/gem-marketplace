@@ -1,4 +1,5 @@
 import { Fragment, useState } from "react";
+import { useSelector } from "react-redux";
 import { Dialog, Popover, Tab, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -8,7 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import baseURL from "../../utils/baseURL";
-import logo from "./logo3.png";
+import logo from "./Navlogo.png";
 
 export default function Navbar() {
   const categoriesToDisplay = [];
@@ -20,6 +21,9 @@ export default function Navbar() {
   //get login user from local storage
   const user = JSON.parse(localStorage.getItem("userInfo"));
   const isLoggedIn = user?.token ? true : false;
+  const cartItems = useSelector((state) => state.cart.cartItems || []);
+  const cartQty = cartItems.reduce((acc, item) => acc + item.qty, 0);
+
   
   return (
     <div className="bg-white">
@@ -60,7 +64,7 @@ export default function Navbar() {
                   </button>
                 </div>
                 {/* mobile category menu links */}
-                <div className="space-y-6 border-t border-gray-200 py-6 px-4">
+                <div className="space-y-6 border-t bg-gradient-to-r from-slate-400 to-red-300 py-6 px-4">
                   {/* {navigation.pages.map((page) => (
                     <div key={page.name} className="flow-root">
                       <a
@@ -73,7 +77,7 @@ export default function Navbar() {
                   {categoriesToDisplay?.length <= 0 ? (
                     <>
                       <Link
-                        to= "products?category=Products"
+                        to= "/products?category=Products"
                         className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">
                         Products
                       </Link>
@@ -85,7 +89,7 @@ export default function Navbar() {
                       </Link>
 
                       <Link
-                        to="/"
+                        to="/articles"
                         className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">
                         Articles
                       </Link>
@@ -136,7 +140,7 @@ export default function Navbar() {
       <header className="relative z-10">
         <nav aria-label="Top">
           {/* Top navigation  desktop*/}
-          <div className="bg-gradient-to-r from-slate-400 to-black">
+          <div className="bg-gradient-to-r from-slate-800 to-gray-300">
             <div className="mx-auto flex h-10 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
               <p className="flex-1 text-center text-sm font-medium text-white lg:flex-none">
                 Discover the Brilliance
@@ -161,7 +165,7 @@ export default function Navbar() {
           </div>
 
           {/* Deskto Navigation */}
-          <div className="bg-white">
+          <div className="bg-gradient-to-r from-slate-400 to-red-300">
             <div className="border-b border-gray-200">
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 items-center justify-between">
@@ -170,9 +174,9 @@ export default function Navbar() {
                     <Link to="/">
                       <span className="sr-only">Your Company</span>
                       <img
-                        className="h-32 pt-2 w-auto"
+                        className="h-12 pt-2 w-auto"
                         src={logo}
-                        alt="i-novotek logo"
+                        alt="Gemora logo"
                       />
                     </Link>
                   </div>
@@ -184,7 +188,7 @@ export default function Navbar() {
                         {categoriesToDisplay?.length <= 0 ? (
                           <>
                       <Link
-                        to= "products?category=cut and polished"
+                        to= "/products?category=cut and polished"
                         className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">
                         Products
                       </Link>
@@ -196,7 +200,7 @@ export default function Navbar() {
                       </Link>
 
                       <Link
-                        to="/"
+                        to="/articles"
                         className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">
                         Articles
                       </Link>
@@ -232,7 +236,7 @@ export default function Navbar() {
                   {/* logo */}
                   <Link to="/" className="lg:hidden">
                     <img
-                      className="h-32 mt-2 w-auto"
+                      className="h-14 mt-2 w-auto"
                       src={logo}
                       alt="i-novotek logo"
                     />
@@ -267,9 +271,7 @@ export default function Navbar() {
                             aria-hidden="true"
                           />
                           <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-                            {cartItemsFromLocalStorage?.length > 0
-                              ? cartItemsFromLocalStorage.length
-                              : 0}
+                            {cartQty}
                           </span>
                         </Link>
                       </div>

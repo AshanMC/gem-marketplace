@@ -16,7 +16,6 @@ const CategorySchema = new Schema(
 
         image: {
             type: String,
-            default: "https://pngimg.com/uploads/sapphire/sapphire_PNG8.png",
             required: true,
         },
         products: [

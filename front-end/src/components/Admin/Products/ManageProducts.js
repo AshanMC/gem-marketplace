@@ -1,85 +1,78 @@
-import React from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProductsAction, deleteProductAction } from "../../../redux/slices/products/productSlice";
+import LoadingComponent from "../../LoadingComp/LoadingComponent";
+import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 import { Link } from "react-router-dom";
 
-const ManageProducts = ({ products = [], onDelete }) => {
-  return (
-    <div className="max-w-6xl mx-auto bg-white p-8 mt-10 rounded-2xl shadow-lg border">
-      <h2 className="text-3xl font-semibold text-center text-purple-700 mb-6">
-        Manage Products
-      </h2>
+export default function ManageProducts() {
+  const dispatch = useDispatch();
 
-      {products.length === 0 ? (
-        <div className="text-center text-gray-500 py-10">
-          No products found. Please add some.
-        </div>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full table-auto text-sm border border-gray-200 rounded-lg overflow-hidden shadow-md">
-            <thead className="bg-purple-600 text-white">
-              <tr>
-                <th className="px-5 py-3 text-left">Image</th>
-                <th className="px-5 py-3 text-left">Name</th>
-                <th className="px-5 py-3 text-left">Category</th>
-                <th className="px-5 py-3 text-left">Price (Rs)</th>
-                <th className="px-5 py-3 text-left">Weight (carats)</th>
-                <th className="px-5 py-3 text-left">Quantity</th>
-                <th className="px-5 py-3 text-left">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-100">
-              {products.map((product) => (
-                <tr key={product._id} className="hover:bg-gray-50 transition-all">
-                  <td className="px-5 py-3">
-                    <img
-                      src={product.image || "https://via.placeholder.com/60"}
-                      alt={product.name}
-                      className="w-14 h-14 object-cover rounded shadow"
-                    />
-                  </td>
-                  <td className="px-5 py-3 font-medium text-gray-800">
-                    {product.name}
-                  </td>
-                  <td className="px-5 py-3">
-                    {typeof product.category === "string"
-                      ? product.category
-                      : product.category?.name || "—"}
-                  </td>
-                  <td className="px-5 py-3">
-                    Rs. {Number(product.price || 0).toLocaleString()}
-                  </td>
-                  <td className="px-5 py-3">
-                    {product.weight ? `${product.weight} ct` : "—"}
-                  </td>
-                  <td className="px-5 py-3">{product.totalQty || 0}</td>
-                  <td className="px-5 py-3 space-x-2">
+  const { products, loading, error } = useSelector((state) => state.products);
+
+  useEffect(() => {
+    dispatch(fetchProductsAction());
+  }, [dispatch]);
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      dispatch(deleteProductAction(id)).then(() => dispatch(fetchProductsAction()));
+    }
+  };
+
+  return (
+
+    <div className="px-4 sm:px-6 lg:px-8 mt-10">
+      <h1 className="text-2xl font-bold mb-6">Manage Products</h1>
+
+      {loading && <LoadingComponent />}
+      {error && <ErrorMsg message={error} />}
+
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+          <thead className="bg-gray-100 text-gray-700 text-left">
+            <tr>
+              <th className="px-6 py-3">Name</th>
+              <th className="px-6 py-3">Price</th>
+              <th className="px-6 py-3">Qty</th>
+              <th className="px-6 py-3">Category</th>
+              <th className="px-6 py-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products?.length > 0 ? (
+              products.map((product) => (
+                <tr key={product._id} className="border-b hover:bg-gray-50">
+                  <td className="px-6 py-4">{product.name}</td>
+                  <td className="px-6 py-4">Rs. {product.price}</td>
+                  <td className="px-6 py-4">{product.totalQty}</td>
+                  <td className="px-6 py-4">{product.category}</td>
+                  <td className="px-6 py-4 space-x-3">
                     <Link
                       to={`/admin/products/edit/${product._id}`}
-                      className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1.5 rounded-md transition"
+                      className="text-indigo-600 hover:underline font-medium"
                     >
                       Edit
                     </Link>
                     <button
-                      onClick={() => onDelete?.(product._id)}
-                      className="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded-md transition"
+                      onClick={() => handleDelete(product._id)}
+                      className="text-red-600 hover:underline font-medium"
                     >
                       Delete
                     </button>
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-
-          {/* Optional: Pagination or Load More */}
-          <div className="mt-6 text-right">
-            <button className="bg-purple-600 text-white px-5 py-2 rounded hover:bg-purple-700">
-              Load More
-            </button>
-          </div>
-        </div>
-      )}
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                  No products found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
-
-export default ManageProducts;

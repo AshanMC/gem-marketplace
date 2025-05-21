@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import Review from "../model/Review.js";
 import Product from "../model/Product.js";
+import Accessory from "../model/Accessory.js";
 
 // @desc create new review
 // @route POST /api/v1/reviews
@@ -37,4 +38,29 @@ export const createReviewCtrl = asyncHandler(async(req, res)=>{
         success: true,
         message: "Review created successfully",
     })
+});
+
+export const createAccessoryReviewCtrl = asyncHandler(async (req, res) => {
+  const { message, rating } = req.body;
+  const { accessoryID } = req.params;
+
+  const accessory = await Accessory.findById(accessoryID).populate("reviews");
+  if (!accessory) throw new Error("Accessory not found");
+
+  const alreadyReviewed = accessory.reviews.find(
+    (r) => r?.user?.toString() === req.userAuthId.toString()
+  );
+  if (alreadyReviewed) throw new Error("You have already reviewed this accessory");
+
+  const review = await Review.create({
+    message,
+    rating,
+    accessory: accessoryID,
+    user: req.userAuthId,
+  });
+
+  accessory.reviews.push(review._id);
+  await accessory.save();
+
+  res.status(201).json({ success: true, message: "Accessory review submitted" });
 });

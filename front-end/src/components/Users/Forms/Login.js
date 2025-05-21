@@ -3,109 +3,100 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUserAction } from "../../../redux/slices/users/usersSlice.js";
 import ErrorMsg from "../../ErrorMsg/ErrorMsg.js";
 import LoadingComponent from "../../LoadingComp/LoadingComponent.js";
+import { motion } from "framer-motion";
 
 const Login = () => {
-  //dispatch
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     email: "admin@gmail.com",
     password: "12345",
   });
-  //---Destructuring---
+
   const { email, password } = formData;
-  //---onchange handler----
+
   const onChangeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  //---onsubmit handler----
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    dispatch(loginUserAction({email, password}))
+    dispatch(loginUserAction({ email, password }));
   };
 
-  //get data from store
-  const {error, loading, userInfo} = useSelector(
-    (state) => state?.users?.userAuth
-  );
-
-  // //redirect
-  // if (userInfo?.userFound?.isAdmin) {
-  //   window.location.href = "/admin"
-  // }else{
-  //   window.location.href = "/customer-profile";
-  // }
+  const { error, loading } = useSelector((state) => state?.users?.userAuth);
 
   return (
-    <>
-      <section className="py-20 bg-gray-100 overflow-x-hidden">
-        <div className="relative container px-4 mx-auto">
-          <div className="absolute inset-0 bg-blue-200 my-24 -ml-4" />
-          <div className="relative flex flex-wrap bg-white">
-            <div className="w-full md:w-4/6 px-4">
-              <div className="lg:max-w-3xl mx-auto py-20 px-4 md:px-10 lg:px-20">
-                <h3 className="mb-8 text-4xl md:text-5xl font-bold font-heading">
-                  Login to your account
-                </h3>
-                <p className="mb-10 font-semibold font-heading">
-                  Happy to see you again
-                </p>
-                {/*err*/}
-                {error && <ErrorMsg message={error?.message} />}
-                <form
-                  className="flex flex-wrap -mx-4"
-                  onSubmit={onSubmitHandler}>
-                  <div className="w-full md:w-1/2 px-4 mb-8 md:mb-12">
-                    <label>
-                      <h4 className="mb-5 text-gray-400 uppercase font-bold font-heading">
-                        Your Email
-                      </h4>
-                      <input
-                        name="email"
-                        value={email}
-                        onChange={onChangeHandler}
-                        className="p-5 w-full border border-gray-200 focus:ring-blue-300 focus:border-blue-300 rounded-md"
-                        type="email"
-                      />
-                    </label>
-                  </div>
-                  <div className="w-full md:w-1/2 px-4 mb-12">
-                    <label>
-                      <h4 className="mb-5 text-gray-400 uppercase font-bold font-heading">
-                        Password
-                      </h4>
-                      <input
-                        name="password"
-                        value={password}
-                        onChange={onChangeHandler}
-                        className="p-5 w-full border border-gray-200 focus:ring-blue-300 focus:border-blue-300 rounded-md"
-                        type="password"
-                      />
-                    </label>
-                  </div>
+    <section className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-purple-200 flex items-center justify-center py-16 px-4">
+      <div className="max-w-5xl w-full bg-white shadow-2xl rounded-3xl overflow-hidden grid md:grid-cols-2">
+        {/* Left: Login Form */}
+        <motion.div
+          initial={{ opacity: 0, x: -40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          className="p-10"
+        >
+          <h3 className="text-4xl font-bold text-gray-800 mb-4">
+            Login to Your Account
+          </h3>
+          <p className="text-gray-500 mb-8">Welcome back, we've missed you!</p>
 
-                  <div className="w-full px-4">
-                  {loading ?  
-                    <LoadingComponent/>
-                    :
-                    <button className="bg-blue-800 hover:bg-blue-900 text-white font-bold font-heading py-5 px-8 rounded-md uppercase">
-                      Login
-                    </button>
-                    }
-                  </div>
-                </form>
-              </div>
+          {error && <ErrorMsg message={error?.message} />}
+
+          <form onSubmit={onSubmitHandler} className="space-y-6">
+            <div>
+              <label className="block text-gray-600 font-semibold mb-2">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={email}
+                onChange={onChangeHandler}
+                placeholder="you@example.com"
+                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 outline-none transition"
+              />
             </div>
-            <div
-              className="w-full md:w-2/6 h-128 md:h-auto flex items-center lg:items-end px-4 pb-20 bg-cover bg-no-repeat"
-              style={{
-                backgroundImage:
-                  'url("https://cdn.pixabay.com/photo/2017/03/29/04/47/high-heels-2184095_1280.jpg")',
-              }}></div>
-          </div>
-        </div>
-      </section>
-    </>
+
+            <div>
+              <label className="block text-gray-600 font-semibold mb-2">Password</label>
+              <input
+                type="password"
+                name="password"
+                value={password}
+                onChange={onChangeHandler}
+                placeholder="••••••••"
+                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 outline-none transition"
+              />
+            </div>
+
+            <div>
+              {loading ? (
+                <LoadingComponent />
+              ) : (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  type="submit"
+                  className="w-full bg-blue-800 hover:bg-blue-900 text-white py-3 rounded-md text-lg font-semibold transition"
+                >
+                  Login
+                </motion.button>
+              )}
+            </div>
+          </form>
+        </motion.div>
+
+        {/* Right: Image Banner */}
+        <motion.div
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          className="hidden md:block bg-cover bg-center"
+          style={{
+            backgroundImage:
+              'url("https://cdn.pixabay.com/photo/2017/03/29/04/47/high-heels-2184095_1280.jpg")',
+          }}
+        ></motion.div>
+      </div>
+    </section>
   );
 };
 

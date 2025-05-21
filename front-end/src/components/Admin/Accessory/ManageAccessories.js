@@ -1,71 +1,75 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAccessoriesAction } from "../../../redux/slices/accessories/accessorySlice";
+import {
+  fetchAccessoriesAction,
+  deleteAccessoryAction,
+} from "../../../redux/slices/accessories/accessorySlice";
+import { Link } from "react-router-dom";
 
-const ManageAccessories = () => {
+export default function ManageAccessories() {
   const dispatch = useDispatch();
-  const { accessories = [], loading, error } = useSelector((state) => state.accessories || {});
+  const { accessories, loading, error } = useSelector((state) => state.accessories);
 
   useEffect(() => {
     dispatch(fetchAccessoriesAction());
   }, [dispatch]);
 
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this accessory?")) {
+      dispatch(deleteAccessoryAction(id)).then(() => {
+        dispatch(fetchAccessoriesAction());
+      });
+    }
+  };
+
   return (
-    <div className="max-w-6xl mx-auto bg-white p-8 mt-10 rounded-2xl shadow-lg border">
-      <h2 className="text-3xl font-semibold text-center text-purple-700 mb-6">
-        Manage Accessories
-      </h2>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6">Manage Accessories</h1>
 
-      {loading && <p className="text-center text-gray-500">Loading accessories...</p>}
-      {error && <p className="text-center text-red-500">{error}</p>}
+      {loading && <p>Loading accessories...</p>}
+      {error && <p className="text-red-500">{error}</p>}
 
-      {accessories.length === 0 ? (
-        <div className="text-center text-gray-500 py-10">
-          No accessories found. Please add some.
-        </div>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full table-auto text-sm border border-gray-200 rounded-lg overflow-hidden shadow-md">
-            <thead className="bg-purple-600 text-white">
-              <tr>
-                <th className="px-5 py-3 text-left">Image</th>
-                <th className="px-5 py-3 text-left">Name</th>
-                <th className="px-5 py-3 text-left">Category</th>
-                <th className="px-5 py-3 text-left">Price (Rs)</th>
-                <th className="px-5 py-3 text-left">Stock</th>
-                <th className="px-5 py-3 text-left">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-100">
-              {accessories.map((item) => (
-                <tr key={item._id} className="hover:bg-gray-50 transition-all">
-                  <td className="px-5 py-3">
-                    <img
-                      src={item?.images?.[0] || "https://via.placeholder.com/60"}
-                      alt={item.name}
-                      className="w-14 h-14 object-cover rounded shadow"
-                    />
-                  </td>
-                  <td className="px-5 py-3 font-medium text-gray-800">{item.name}</td>
-                  <td className="px-5 py-3">{item.category}</td>
-                  <td className="px-5 py-3">Rs. {item.price}</td>
-                  <td className="px-5 py-3">{item.stockQty}</td>
-                  <td className="px-5 py-3 space-x-2">
-                    <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1.5 rounded-md transition">
-                      Edit
-                    </button>
-                    <button className="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded-md transition">
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <table className="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden shadow">
+        <thead className="bg-gray-100 text-gray-700">
+          <tr>
+            <th className="text-left px-6 py-3">Image</th>
+            <th className="text-left px-6 py-3">Name</th>
+            <th className="text-left px-6 py-3">Price</th>
+            <th className="text-left px-6 py-3">Stock</th>
+            <th className="text-left px-6 py-3">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {accessories.map((item) => (
+            <tr key={item._id} className="border-t">
+              <td className="px-6 py-4">
+                <img
+                  src={item.images?.[0]}
+                  alt={item.name}
+                  className="h-16 w-24 object-cover rounded"
+                />
+              </td>
+              <td className="px-6 py-4 font-semibold">{item.name}</td>
+              <td className="px-6 py-4">Rs. {item.price.toLocaleString()}</td>
+              <td className="px-6 py-4">{item.stockQty}</td>
+              <td className="px-6 py-4 space-x-4">
+                <Link
+                  to={`/admin/edit-accessory/${item._id}`}
+                  className="text-blue-600 hover:underline font-medium"
+                >
+                  Edit
+                </Link>
+                <button
+                  onClick={() => handleDelete(item._id)}
+                  className="text-red-600 hover:underline font-medium"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
-};
-
-export default ManageAccessories;
+}

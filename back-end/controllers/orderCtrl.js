@@ -61,32 +61,48 @@ export const createOrderCtrl = asyncHandler(async(req, res) =>{
     await user.save();
     //make payment (stripe)
     //convert order items to have some structure that stripe need
-    const convertOrders = await Promise.all(orderItems.map(async (item) => {
-    let itemModel = item.type === "accessory" ? Accessory : Product;
-    const dbItem = await itemModel.findById(item._id);
-    
+    const orderItemsValidated = await Promise.all(
+    orderItems.map(async (item) => {
+    console.log("🧾 Processing item:", item);
+
+    const itemModel = item.type === "accessory" ? Accessory : Product;
+    const itemId = item._id;
+
+    if (!itemId) {
+        throw new Error(` Missing _id in item: ${JSON.stringify(item)}`);
+    }
+
+    const itemRecord = await itemModel.findById(itemId);
+    if (!itemRecord) {
+        throw new Error(` Product/Accessory not found for ID: ${itemId}`);
+    }
+
     return {
-        price_data: {
-            currency: "usd",
-            product_data: {
-                name: dbItem.name,
-                description: dbItem.description || "",
-            },
-            unit_amount: parseInt(dbItem.price) * 100,
-        },
-        quantity: item.qty,
-    };
-    }));
+        ...item,
+        price: itemRecord.price,
+        name: itemRecord.name,
+        };
+    })
+    );
     
     const session = await stripe.checkout.sessions.create({
-        line_items: convertOrders,
-        metadata: {
-            orderId: JSON.stringify(order?._id),
-        },
-        mode:"payment",
-        success_url: "http://localhost:3000/success",
-        cancel_url: "http://localhost:3000/cancel",
-    });
+  line_items: orderItemsValidated.map((item) => ({
+    price_data: {
+      currency: "lkr", // or "usd" depending on your account
+      product_data: {
+        name: item.name,
+      },
+      unit_amount: Math.round(item.price * 100), // Stripe uses cents
+    },
+    quantity: item.qty,
+  })),
+  metadata: {
+    orderId: JSON.stringify(order?._id),
+  },
+  mode: "payment",
+  success_url: "http://localhost:3000/success",
+  cancel_url: "http://localhost:3000/cancel",
+});
     res.send({url: session.url});
     
     

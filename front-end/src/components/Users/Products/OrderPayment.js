@@ -1,14 +1,52 @@
-import AddShippingAddress from "../Forms/AddShippingAddress";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import baseURL from "../../../utils/baseURL";
+import { useNavigate } from "react-router-dom";
+import ShippingAddressDetails from "../../Users/Profile/ShippingAddressDetails";
 
 export default function OrderPayment() {
-  //---get cart items from store---
-  const { cartItems } = [];
+  const navigate = useNavigate();
+  const { cartItems } = useSelector((state) => state.cart);
+  const { profile } = useSelector((state) => state.users);
+  const shippingAddress = profile?.ShippingAddress;
+  const token =
+    profile?.token ||
+    (localStorage.getItem("userInfo") &&
+      JSON.parse(localStorage.getItem("userInfo")).token);
 
-  const calculateTotalDiscountedPrice = () => {};
+  const calculateTotalPrice = () =>
+    cartItems.reduce((acc, item) => acc + (item.price || 0) * item.qty, 0);
 
-  //create order submit handler
-  const createOrderSubmitHandler = (e) => {
+  const createOrderSubmitHandler = async (e) => {
     e.preventDefault();
+
+    // ✅ Ensure proper format: _id, qty, type
+    const orderItems = cartItems.map((item) => ({
+      _id: item._id,
+      qty: item.qty,
+      type: item.type || "product", // fallback to product if not set
+    }));
+
+    try {
+      const response = await axios.post(
+        `${baseURL}/orders`,
+        {
+          orderItems,
+          shippingAddress,
+          totalPrice: calculateTotalPrice(),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // ✅ Stripe redirect
+      window.location.href = response.data.url;
+    } catch (error) {
+      console.error("❌ Order creation failed:", error.response?.data || error.message);
+    }
   };
 
   return (
@@ -20,16 +58,12 @@ export default function OrderPayment() {
           <div className="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16">
             <div>
               <div className="mt-10 border-t border-gray-200 pt-10">
-                {/* shipping Address */}
-                <AddShippingAddress />
+                <ShippingAddressDetails />
               </div>
             </div>
 
-            {/* Order summary */}
             <div className="mt-10 lg:mt-0">
-              <h2 className="text-lg font-medium text-gray-900">
-                Order summary
-              </h2>
+              <h2 className="text-lg font-medium text-gray-900">Order summary</h2>
 
               <div className="mt-4 rounded-lg border border-gray-200 bg-white shadow-sm">
                 <h3 className="sr-only">Items in your cart</h3>
@@ -38,30 +72,28 @@ export default function OrderPayment() {
                     <li key={product._id} className="flex py-6 px-4 sm:px-6">
                       <div className="flex-shrink-0">
                         <img
-                          src={product.imageSrc}
-                          alt={product.imageAlt}
-                          className="w-20 rounded-md"
+                          src={
+                            product?.images?.[0] ||
+                            product?.image ||
+                            product?.imageUrl ||
+                            "https://via.placeholder.com/80"
+                          }
+                          alt={product.name || "Product"}
+                          className="w-20 h-20 object-cover rounded-md"
                         />
                       </div>
 
                       <div className="ml-6 flex flex-1 flex-col">
                         <div className="flex">
                           <div className="min-w-0 flex-1">
-                            <p className="mt-1 text-sm text-gray-500">
-                              {product.name}
-                            </p>
-                            <p className="mt-1 text-sm text-gray-500">
-                              {product.size}
-                            </p>
-                            <p className="mt-1 text-sm text-gray-500">
-                              {product.color}
-                            </p>
+                            <p className="mt-1 text-sm text-gray-500">{product.name}</p>
+                            <p className="mt-1 text-sm text-gray-500">Qty: {product.qty}</p>
                           </div>
                         </div>
 
                         <div className="flex flex-1 items-end justify-between pt-2">
                           <p className="mt-1 text-sm font-medium text-gray-900">
-                            $ {product?.discountedPrice} X {product?.qty}
+                            Rs. {product?.price} × {product?.qty}
                           </p>
                         </div>
                       </div>
@@ -71,12 +103,12 @@ export default function OrderPayment() {
                 <dl className="space-y-6 border-t border-gray-200 py-6 px-4 sm:px-6">
                   <div className="flex items-center justify-between">
                     <dt className="text-sm">Taxes</dt>
-                    <dd className="text-sm font-medium text-gray-900">$0.00</dd>
+                    <dd className="text-sm font-medium text-gray-900">Rs. 0.00</dd>
                   </div>
                   <div className="flex items-center justify-between border-t border-gray-200 pt-6">
                     <dt className="text-base font-medium">Sub Total</dt>
                     <dd className="text-base font-medium text-gray-900">
-                      $ {calculateTotalDiscountedPrice()}
+                      Rs. {calculateTotalPrice()}
                     </dd>
                   </div>
                 </dl>
@@ -84,8 +116,9 @@ export default function OrderPayment() {
                 <div className="border-t border-gray-200 py-6 px-4 sm:px-6">
                   <button
                     onClick={createOrderSubmitHandler}
-                    className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
-                    Confirm Payment - ${calculateTotalDiscountedPrice()}
+                    className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                  >
+                    Confirm Payment – Rs. {calculateTotalPrice()}
                   </button>
                 </div>
               </div>

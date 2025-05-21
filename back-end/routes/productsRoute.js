@@ -9,7 +9,7 @@ const productRouter = exppress.Router();
 productRouter.post('/', isLoggedIn, upload.array("files"), isAdmin, createProductCtrl);
 productRouter.get('/', getProductsCtrl);
 productRouter.get('/:id', getProductCtrl);
-productRouter.put('/:id', isLoggedIn, isAdmin, updateProductCtrl);
+productRouter.put('/:id', isLoggedIn, upload.array("files"), isAdmin, updateProductCtrl);
 productRouter.delete('/:id/delete', isLoggedIn, isAdmin, deleteProductCtrl);
 
 export default productRouter;

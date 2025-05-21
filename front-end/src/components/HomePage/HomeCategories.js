@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategoriesAction } from "../../redux/slices/categories/categorySlice";
+import { Link } from "react-router-dom";
 
 const HomeCategories = () => {
   const dispatch = useDispatch();
@@ -23,22 +24,36 @@ const HomeCategories = () => {
 
       {Array.isArray(categories) && categories.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-          {categories.map((category) => (
-            <div
-              key={category._id}
-              className="bg-white/10 backdrop-blur-md text-white p-6 rounded-lg shadow hover:shadow-xl transition transform hover:scale-105"
-            >
-              {/* Optional image support */}
-              {category.image && (
-                <img
-                  src={category.image}
-                  alt={category.name}
-                  className="h-32 w-full object-cover rounded mb-3"
-                />
-              )}
-              <h3 className="text-lg font-semibold text-center">{category.name}</h3>
-            </div>
-          ))}
+          {categories.map((category) => {
+  // Determine full image path
+  let imageUrl = "/fallback.jpg";
+  if (category?.image) {
+    if (category.image.startsWith("http")) {
+      imageUrl = category.image;
+    } else {
+      imageUrl = `${import.meta.env.VITE_BASE_URL || "http://localhost:5000"}/${category.image}`;
+    }
+  }
+
+  return (
+    <Link
+      key={category._id}
+      to={`/products-filters?category=${category.name}`}
+      className="bg-white/10 backdrop-blur-md text-white p-6 rounded-lg shadow hover:shadow-xl transition transform hover:scale-105"
+    >
+      <img
+        src={imageUrl}
+        alt={category.name}
+        className="h-32 w-full object-cover rounded mb-3"
+        onError={(e) => {
+          e.target.onerror = null;
+          e.target.src = "/fallback.jpg";
+        }}
+      />
+      <h3 className="text-lg font-semibold text-center">{category.name}</h3>
+    </Link>
+  );
+})}
         </div>
       ) : (
         <p className="text-center text-gray-300">No categories available.</p>

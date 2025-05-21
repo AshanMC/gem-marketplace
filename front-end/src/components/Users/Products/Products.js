@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductsAction } from "../../../redux/slices/products/productSlice";
 import { fetchCategoriesAction } from "../../../redux/slices/categories/categorySlice";
+import { addToCart } from "../../../redux/slices/Cart/cartSlice";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import Navbar from "../../Navbar/Navbar";
 
 const Products = () => {
   const dispatch = useDispatch();
@@ -34,12 +36,24 @@ const Products = () => {
     setPriceRange([0, 1000000]);
   };
 
-  const filteredProducts = products.filter((product) => {
+  const handleAddToCart = (product) => {
+    dispatch(
+      addToCart({
+        _id: product._id,
+        name: product.name,
+        price: product.price,
+        image: product.images[0],
+        qtyLeft: product.totalQty,
+      })
+    );
+  };
+
+  const filteredProducts = products.filter((Product) => {
     const matchesCategory = selectedCategory
-      ? product.category === selectedCategory
+      ? Product.category === selectedCategory
       : true;
     const matchesPrice =
-      product.price >= priceRange[0] && product.price <= priceRange[1];
+      Product.price >= priceRange[0] && Product.price <= priceRange[1];
     return matchesCategory && matchesPrice;
   });
 
@@ -47,9 +61,11 @@ const Products = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="bg-gradient-to-b from-white to-black min-h-screen text-white pt-24 pb-10"
+      className="bg-gradient-to-b from-white to-black min-h-screen text-white pb-10"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Navbar />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
         <motion.h1
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -60,7 +76,7 @@ const Products = () => {
         </motion.h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
-          {/* Sidebar Filters */}
+          {/* Filters */}
           <motion.div
             initial={{ x: -40, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
@@ -142,6 +158,12 @@ const Products = () => {
                     className="mt-2 bg-purple-600 hover:bg-purple-700 w-full py-2 text-white rounded"
                   >
                     View Details
+                  </button>
+                  <button
+                    onClick={() => handleAddToCart(product)}
+                    className="mt-2 bg-green-600 hover:bg-green-700 w-full py-2 text-white rounded"
+                  >
+                    Add to Cart
                   </button>
                 </motion.div>
               ))
