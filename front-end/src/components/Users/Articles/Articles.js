@@ -14,7 +14,7 @@ export default function Articles() {
   }, [dispatch]);
 
   return (
-    <div className="bg-gradient-to-b from-white to-black min-h-screen text-white">
+    <div className="bg-gradient-to-br from-purple-100 via-blue-50 to-yellow-100 min-h-screen text-white">
       {/* Navbar */}
       <Navbar />
 

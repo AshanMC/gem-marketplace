@@ -1,16 +1,41 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchAllOrdersAction,
+  deleteOrderAction,
+  updateOrderStatusAction,
+} from "../../../redux/slices/orders/orderSlice";
 
-const ManageOrders = ({ orders = [] }) => {
+export default function ManageOrders() {
+  const dispatch = useDispatch();
+  const { orders, loading, error } = useSelector((state) => state.orders);
+
+  useEffect(() => {
+    dispatch(fetchAllOrdersAction());
+  }, [dispatch]);
+
+  const handleMarkDelivered = (id) => {
+    dispatch(updateOrderStatusAction({ id, status: "delivered" }));
+  };
+
+  const handleDeleteOrder = (id) => {
+    if (window.confirm("Are you sure you want to delete this order?")) {
+      dispatch(deleteOrderAction(id));
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto bg-white p-8 mt-10 rounded-2xl shadow-lg border">
       <h2 className="text-3xl font-semibold text-center text-purple-700 mb-6">
         Manage Orders
       </h2>
 
-      {orders.length === 0 ? (
-        <div className="text-center text-gray-500 py-10">
-          No orders available.
-        </div>
+      {loading ? (
+        <p className="text-center text-gray-500">Loading orders...</p>
+      ) : error ? (
+        <p className="text-center text-red-500">{error}</p>
+      ) : orders.length === 0 ? (
+        <div className="text-center text-gray-500 py-10">No orders available.</div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full table-auto text-sm border border-gray-200 rounded-lg overflow-hidden shadow-md">
@@ -27,32 +52,34 @@ const ManageOrders = ({ orders = [] }) => {
             <tbody className="bg-white divide-y divide-gray-100">
               {orders.map((order) => (
                 <tr key={order._id} className="hover:bg-gray-50 transition-all">
-                  <td className="px-5 py-3 font-medium text-gray-800">
-                    {order._id}
-                  </td>
+                  <td className="px-5 py-3 font-medium text-gray-800">{order._id}</td>
                   <td className="px-5 py-3">{order.user?.fullname || "Unknown"}</td>
                   <td className="px-5 py-3">Rs. {order.totalPrice}</td>
                   <td className="px-5 py-3">
-                    {order.isPaid ? "Paid" : "Not Paid"}
+                    {order.paymentStatus === "paid" ? (
+                      <span className="text-green-600 font-medium">Paid</span>
+                    ) : (
+                      <span className="text-red-600 font-medium">Not Paid</span>
+                    )}
                   </td>
-                  <td className="px-5 py-3">
-                    {order.isDelivered ? (
+                  <td className="px-5 py-3 capitalize">
+                    {order.status === "delivered" ? (
                       <span className="text-green-600 font-semibold">Delivered</span>
                     ) : (
-                      <span className="text-yellow-600 font-semibold">Pending</span>
+                      <span className="text-yellow-600 font-semibold">{order.status}</span>
                     )}
                   </td>
                   <td className="px-5 py-3 space-x-2">
-                    {!order.isDelivered && (
+                    {order.status !== "delivered" && (
                       <button
-                        onClick={() => alert("Mark this as delivered")}
+                        onClick={() => handleMarkDelivered(order._id)}
                         className="bg-green-500 hover:bg-green-600 text-white px-4 py-1.5 rounded-md transition"
                       >
                         Mark Delivered
                       </button>
                     )}
                     <button
-                      onClick={() => alert("Delete order")}
+                      onClick={() => handleDeleteOrder(order._id)}
                       className="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded-md transition"
                     >
                       Delete
@@ -63,7 +90,7 @@ const ManageOrders = ({ orders = [] }) => {
             </tbody>
           </table>
 
-          {/* Optional Pagination */}
+          {/* Optional: Pagination */}
           <div className="mt-6 text-right">
             <button className="bg-purple-600 text-white px-5 py-2 rounded hover:bg-purple-700">
               Load More
@@ -73,6 +100,4 @@ const ManageOrders = ({ orders = [] }) => {
       )}
     </div>
   );
-};
-
-export default ManageOrders;
+}

@@ -155,7 +155,7 @@ export const getProductCtrl = asyncHandler(async(req, res)=>{
 
 export const updateProductCtrl = async (req, res) => {
   try {
-    const { name, price, description, category } = req.body;
+    const { name, price, description, category, weight, totalQty } = req.body;
 
     // Handle existing image URLs
     let existingImages = [];
@@ -179,6 +179,8 @@ export const updateProductCtrl = async (req, res) => {
         price,
         description,
         category,
+        weight,
+        totalQty,
         images: finalImages,
       },
       { new: true }

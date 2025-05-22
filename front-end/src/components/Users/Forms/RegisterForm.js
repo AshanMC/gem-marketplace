@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUserAction } from "../../../redux/slices/users/usersSlice";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
 import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 import { motion } from "framer-motion";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const RegisterForm = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullname: "",
     email: "",
@@ -14,6 +17,20 @@ const RegisterForm = () => {
   });
 
   const { fullname, email, password } = formData;
+  const { user, error, loading } = useSelector((state) => state.users);
+
+  useEffect(() => {
+  if (user && Object.keys(user).length > 0) {
+    Swal.fire({
+      icon: "success",
+      title: "Account created successfully!",
+      text: "Redirecting to login...",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+    setTimeout(() => navigate("/login"), 2200);
+    }
+  }, [user, navigate]);
 
   const onChangeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,8 +40,6 @@ const RegisterForm = () => {
     e.preventDefault();
     dispatch(registerUserAction({ fullname, email, password }));
   };
-
-  const { user, error, loading } = useSelector((state) => state.users);
 
   return (
     <section className="min-h-screen bg-gradient-to-br from-purple-100 via-white to-blue-100 flex items-center justify-center py-16 px-4">
@@ -90,7 +105,7 @@ const RegisterForm = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   type="submit"
-                  className="w-full bg-blue-800 hover:bg-blue-900 text-white py-3 rounded-md text-lg font-semibold transition"
+                  className="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 text-white py-3 rounded-md text-lg font-semibold transition"
                 >
                   Register
                 </motion.button>

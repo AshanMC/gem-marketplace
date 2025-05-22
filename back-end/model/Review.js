@@ -10,10 +10,6 @@ const ReviewSchema = new Schema (
             required: [true, "Review must belong to a user"],
         },
 
-        product: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
-        },
         accessory: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Accessory",

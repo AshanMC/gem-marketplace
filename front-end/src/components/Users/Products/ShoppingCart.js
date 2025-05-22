@@ -1,11 +1,15 @@
 import { useSelector, useDispatch } from "react-redux";
-import {removeFromCart, changeQty,} from "../../../redux/slices/Cart/cartSlice";
+import { removeFromCart, changeQty } from "../../../redux/slices/Cart/cartSlice";
 import { XMarkIcon } from "@heroicons/react/20/solid";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export default function ShoppingCart() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const cartItems = useSelector((state) => state.cart.cartItems);
+  const userInfo = useSelector((state) => state.users.userAuth.userInfo);
 
   const handleQtyChange = (id, qty) => {
     dispatch(changeQty({ id, qty: Number(qty) }));
@@ -13,6 +17,30 @@ export default function ShoppingCart() {
 
   const handleRemove = (id) => {
     dispatch(removeFromCart(id));
+  };
+
+  const handleCheckout = () => {
+    if (!userInfo) {
+      Swal.fire({
+        icon: "warning",
+        title: "Please sign in to proceed to checkout",
+        confirmButtonText: "Sign In",
+        buttonsStyling: false,
+        customClass: {
+          confirmButton: "bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white px-6 py-2 rounded text-base font-semibold shadow-md hover:from-purple-600 hover:via-pink-600 hover:to-red-600",
+        },
+        allowOutsideClick: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          localStorage.setItem("redirectAfterLogin", "/order-payment");
+          setTimeout(() => {
+            navigate("/login");
+          }, 200);
+        }
+      });
+    } else {
+      navigate("/order-payment");
+    }
   };
 
   const total = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
@@ -25,17 +53,12 @@ export default function ShoppingCart() {
         </h1>
         <div className="mt-12 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16">
           <section aria-labelledby="cart-heading" className="lg:col-span-7">
-            <h2 id="cart-heading" className="sr-only">
-              Items in your shopping cart
-            </h2>
+            <h2 id="cart-heading" className="sr-only">Items in your shopping cart</h2>
 
             {cartItems.length === 0 ? (
               <p className="mt-8 text-gray-500">Your cart is empty.</p>
             ) : (
-              <ul
-                role="list"
-                className="divide-y divide-gray-200 border-t border-b border-gray-200"
-              >
+              <ul role="list" className="divide-y divide-gray-200 border-t border-b border-gray-200">
                 {cartItems.map((item) => (
                   <li key={item._id} className="flex py-6 sm:py-10">
                     <div className="flex-shrink-0">
@@ -62,9 +85,7 @@ export default function ShoppingCart() {
                         </div>
 
                         <div className="mt-4 sm:mt-0 sm:pr-9">
-                          <label className="sr-only">
-                            Quantity, {item.name}
-                          </label>
+                          <label className="sr-only">Quantity, {item.name}</label>
                           <select
                             value={item.qty}
                             onChange={(e) =>
@@ -85,10 +106,7 @@ export default function ShoppingCart() {
                               className="-m-2 inline-flex p-2 text-gray-400 hover:text-gray-500"
                             >
                               <span className="sr-only">Remove</span>
-                              <XMarkIcon
-                                className="h-5 w-5"
-                                aria-hidden="true"
-                              />
+                              <XMarkIcon className="h-5 w-5" aria-hidden="true" />
                             </button>
                           </div>
                         </div>
@@ -105,10 +123,7 @@ export default function ShoppingCart() {
             aria-labelledby="summary-heading"
             className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8"
           >
-            <h2
-              id="summary-heading"
-              className="text-lg font-medium text-gray-900"
-            >
+            <h2 id="summary-heading" className="text-lg font-medium text-gray-900">
               Order summary
             </h2>
 
@@ -122,12 +137,12 @@ export default function ShoppingCart() {
             </dl>
 
             <div className="mt-6">
-              <Link
-                to="/order-payment"
+              <button
+                onClick={handleCheckout}
                 className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 text-center block"
               >
                 Proceed to Checkout
-              </Link>
+              </button>
             </div>
           </section>
         </div>

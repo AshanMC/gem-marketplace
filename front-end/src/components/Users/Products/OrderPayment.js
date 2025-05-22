@@ -20,11 +20,10 @@ export default function OrderPayment() {
   const createOrderSubmitHandler = async (e) => {
     e.preventDefault();
 
-    // ✅ Ensure proper format: _id, qty, type
     const orderItems = cartItems.map((item) => ({
       _id: item._id,
       qty: item.qty,
-      type: item.type || "product", // fallback to product if not set
+      type: item.type || "product", // fallback to product if not specified
     }));
 
     try {
@@ -42,10 +41,9 @@ export default function OrderPayment() {
         }
       );
 
-      // ✅ Stripe redirect
       window.location.href = response.data.url;
     } catch (error) {
-      console.error("❌ Order creation failed:", error.response?.data || error.message);
+      console.error("Order creation failed:", error.response?.data || error.message);
     }
   };
 

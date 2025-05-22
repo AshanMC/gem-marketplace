@@ -1,10 +1,20 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import baseURL from "../../../utils/baseURL";
 
-// CREATE ACCESSORY
+const initialState = {
+  accessories: [],
+  accessory: {},
+  loading: false,
+  error: null,
+  isAdded: false,
+  isUpdated: false,
+  isDeleted: false,
+};
+
+// Create accessory
 export const createAccessoryAction = createAsyncThunk(
-  "accessories/create",
+  "accessory/create",
   async (formData, { rejectWithValue, getState }) => {
     try {
       const token = getState()?.users?.userAuth?.userInfo?.token;
@@ -16,43 +26,41 @@ export const createAccessoryAction = createAsyncThunk(
       };
       const { data } = await axios.post(`${baseURL}/accessories`, formData, config);
       return data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Failed to create accessory");
+    } catch (err) {
+      return rejectWithValue(err?.response?.data);
     }
   }
 );
 
-// FETCH ACCESSORIES
+// Fetch all accessories
 export const fetchAccessoriesAction = createAsyncThunk(
-  "accessories/fetchAll",
+  "accessory/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
       const { data } = await axios.get(`${baseURL}/accessories`);
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Failed to fetch accessories");
+      return data.accessories;
+    } catch (err) {
+      return rejectWithValue(err?.response?.data);
     }
   }
 );
-export const deleteAccessoryAction = createAsyncThunk(
-  "accessories/delete",
-  async (id, { rejectWithValue, getState }) => {
+
+// Fetch single accessory
+export const fetchAccessoryAction = createAsyncThunk(
+  "accessory/fetchOne",
+  async (id, { rejectWithValue }) => {
     try {
-      const token = getState()?.users?.userAuth?.userInfo?.token;
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const { data } = await axios.delete(`${baseURL}/accessories/${id}`, config);
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Failed to delete accessory");
+      const { data } = await axios.get(`${baseURL}/accessories/${id}`);
+      return data.accessory;
+    } catch (err) {
+      return rejectWithValue(err?.response?.data);
     }
   }
 );
+
+// Update accessory
 export const updateAccessoryAction = createAsyncThunk(
-  "accessories/update",
+  "accessory/update",
   async ({ id, formData }, { rejectWithValue, getState }) => {
     try {
       const token = getState()?.users?.userAuth?.userInfo?.token;
@@ -64,19 +72,41 @@ export const updateAccessoryAction = createAsyncThunk(
       };
       const { data } = await axios.put(`${baseURL}/accessories/${id}`, formData, config);
       return data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Failed to update accessory");
+    } catch (err) {
+      return rejectWithValue(err?.response?.data);
     }
   }
 );
-export const createAccessoryReviewAction = createAsyncThunk(
-  "accessories/review",
-  async ({ accessoryID, message, rating }, { rejectWithValue, getState }) => {
+
+// Delete accessory
+export const deleteAccessoryAction = createAsyncThunk(
+  "accessory/delete",
+  async (id, { rejectWithValue, getState }) => {
     try {
       const token = getState()?.users?.userAuth?.userInfo?.token;
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
+        },
+      };
+      const { data } = await axios.delete(`${baseURL}/accessories/${id}`, config);
+      return data;
+    } catch (err) {
+      return rejectWithValue(err?.response?.data);
+    }
+  }
+);
+
+// Create review for accessory
+export const createAccessoryReviewAction = createAsyncThunk(
+  "accessory/review",
+  async ({ accessoryID, message, rating }, { rejectWithValue, getState }) => {
+    try {
+      const token = getState().users.userAuth?.userInfo?.token;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
       };
       const { data } = await axios.post(
@@ -85,26 +115,18 @@ export const createAccessoryReviewAction = createAsyncThunk(
         config
       );
       return data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Review failed");
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || err.message);
     }
   }
 );
 
 const accessorySlice = createSlice({
-  name: "accessories",
-  initialState: {
-    accessories: [],
-    accessory: null,
-    loading: false,
-    error: null,
-    isCreated: false,
-  },
+  name: "accessory",
+  initialState,
   reducers: {
     resetAccessoryCreate: (state) => {
-      state.isCreated = false;
-      state.accessory = null;
-      state.error = null;
+      state.isAdded = false;
     },
   },
   extraReducers: (builder) => {
@@ -114,44 +136,51 @@ const accessorySlice = createSlice({
       })
       .addCase(createAccessoryAction.fulfilled, (state, action) => {
         state.loading = false;
-        state.accessory = action.payload;
-        state.isCreated = true;
+        state.accessories.push(action.payload);
+        state.isAdded = true;
       })
       .addCase(createAccessoryAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
+
       .addCase(fetchAccessoriesAction.pending, (state) => {
         state.loading = true;
       })
       .addCase(fetchAccessoriesAction.fulfilled, (state, action) => {
         state.loading = false;
-        state.accessories = action.payload.accessories; // ✅ Only the array
+        state.accessories = action.payload;
       })
       .addCase(fetchAccessoriesAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(deleteAccessoryAction.pending, (state) => {
+
+      .addCase(fetchAccessoryAction.pending, (state) => {
         state.loading = true;
       })
-      .addCase(deleteAccessoryAction.fulfilled, (state) => {
+      .addCase(fetchAccessoryAction.fulfilled, (state, action) => {
         state.loading = false;
+        state.accessory = action.payload;
       })
-      .addCase(deleteAccessoryAction.rejected, (state, action) => {
+      .addCase(fetchAccessoryAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(updateAccessoryAction.pending, (state) => {
-        state.loading = true;
-      })
+
       .addCase(updateAccessoryAction.fulfilled, (state) => {
-        state.loading = false;
+        state.isUpdated = true;
       })
       .addCase(updateAccessoryAction.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload;
       })
+
+      .addCase(deleteAccessoryAction.fulfilled, (state) => {
+        state.isDeleted = true;
+      })
+      .addCase(deleteAccessoryAction.rejected, (state, action) => {
+        state.error = action.payload;
+      });
   },
 });
 

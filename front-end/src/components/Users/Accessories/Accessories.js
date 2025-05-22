@@ -43,7 +43,7 @@ const Accessories = () => {
   );
 
   return (
-    <div className="bg-gradient-to-b from-white to-black min-h-screen text-white">
+    <div className="bg-gradient-to-br from-purple-200 via-blue-100 to-yellow-200 min-h-screen text-white">
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 pt-28 pb-10">

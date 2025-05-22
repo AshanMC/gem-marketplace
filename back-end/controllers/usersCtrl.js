@@ -69,6 +69,13 @@ export const getUserProfile = asyncHandler(async (req, res)=>{
         user,
     });
 });
+// @desc Get all users
+// @route GET /api/v1/users
+// @access private/admin
+export const getAllUsersCtrl = asyncHandler(async (req, res) => {
+  const users = await User.find().populate("orders");
+  res.status(200).json(users);
+});
 
 
 // @desc Update user shipping address

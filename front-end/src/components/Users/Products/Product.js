@@ -47,7 +47,7 @@ const Product = () => {
     return <div className="text-center text-red-500 py-10">{error}</div>;
 
   return (
-    <div className="bg-gradient-to-b from-purple-50 to-black min-h-screen text-white">
+    <div className="w-full h-[900px]bg-gradient-to-br from-purple-200 via-blue-100 to-yellow-200 text-white">
       <Navbar />
       <div className="max-w-6xl mx-auto px-6 py-12">
         <motion.div
@@ -78,10 +78,10 @@ const Product = () => {
             className="flex flex-col justify-center space-y-4"
           >
             <h1 className="text-4xl font-bold tracking-wide">{product?.name}</h1>
-            <p className="text-2xl text-orange-400 font-semibold">
+            <p className="text-2xl text-orange-500 font-semibold">
               Rs. {product?.price}
             </p>
-            <div className="text-sm text-purple-100 space-y-1">
+            <div className="text-sm text-gray-600 space-y-1">
               <p>
                 Weight:{" "}
                 <span className="font-medium">{product?.weight} carats</span>
@@ -91,7 +91,7 @@ const Product = () => {
                 <span className="font-medium">{product?.totalQty}</span>
               </p>
             </div>
-            <p className="text-md text-white/80 leading-relaxed mt-4">
+            <p className="text-md text-gray-600 leading-relaxed mt-4">
               {product?.description}
             </p>
 

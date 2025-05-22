@@ -1,18 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUserAction } from "../../../redux/slices/users/usersSlice.js";
 import ErrorMsg from "../../ErrorMsg/ErrorMsg.js";
 import LoadingComponent from "../../LoadingComp/LoadingComponent.js";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Login = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "admin@gmail.com",
     password: "12345",
   });
 
   const { email, password } = formData;
+  const { error, loading, userInfo } = useSelector((state) => state?.users?.userAuth);
 
   const onChangeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,11 +27,24 @@ const Login = () => {
     dispatch(loginUserAction({ email, password }));
   };
 
-  const { error, loading } = useSelector((state) => state?.users?.userAuth);
+  useEffect(() => {
+  if (userInfo) {
+    Swal.fire({
+      icon: "success",
+      title: "Login successful!",
+      timer: 1500,
+      showConfirmButton: false,
+    });
+
+    const redirectPath = localStorage.getItem("redirectAfterLogin") || "/";
+    localStorage.removeItem("redirectAfterLogin");
+    navigate(redirectPath);
+    }
+  }, [userInfo, navigate]);
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-purple-200 flex items-center justify-center py-16 px-4">
-      <div className="max-w-5xl w-full bg-white shadow-2xl rounded-3xl overflow-hidden grid md:grid-cols-2">
+    <section className="min-h-screen bg-gradient-to-r from-indigo-100 via-purple-100 to-pink-200 flex items-center justify-center py-16 px-4">
+      <div className="max-w-5xl w-full bg-white shadow-xl rounded-3xl overflow-hidden grid md:grid-cols-2">
         {/* Left: Login Form */}
         <motion.div
           initial={{ opacity: 0, x: -40 }}
@@ -40,7 +57,7 @@ const Login = () => {
           </h3>
           <p className="text-gray-500 mb-8">Welcome back, we've missed you!</p>
 
-          {error && <ErrorMsg message={error?.message} />}
+          {error && <ErrorMsg message={error} />}
 
           <form onSubmit={onSubmitHandler} className="space-y-6">
             <div>
@@ -51,7 +68,7 @@ const Login = () => {
                 value={email}
                 onChange={onChangeHandler}
                 placeholder="you@example.com"
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 outline-none transition"
+                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-400 outline-none transition"
               />
             </div>
 
@@ -63,7 +80,7 @@ const Login = () => {
                 value={password}
                 onChange={onChangeHandler}
                 placeholder="••••••••"
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 outline-none transition"
+                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-400 outline-none transition"
               />
             </div>
 
@@ -75,12 +92,23 @@ const Login = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   type="submit"
-                  className="w-full bg-blue-800 hover:bg-blue-900 text-white py-3 rounded-md text-lg font-semibold transition"
+                  className="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 text-white py-3 rounded-md text-lg font-semibold shadow-lg transition"
                 >
                   Login
                 </motion.button>
               )}
             </div>
+
+            <p className="text-sm text-gray-600 mt-4 text-center">
+              Don't have an account?{' '}
+              <button
+                type="button"
+                onClick={() => navigate("/register")}
+                className="text-blue-600 font-semibold hover:underline"
+              >
+                Create one
+              </button>
+            </p>
           </form>
         </motion.div>
 

@@ -1,18 +1,36 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../Navbar/Navbar";
 import HomeCategories from "./HomeCategories";
 import HomeProductTrending from "./HomeProductTrending";
 import Footer from "../Footer.js/Footer";
 import { motion } from "framer-motion";
-import welcomeImage from "./Home1.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategoriesAction } from "../../redux/slices/categories/categorySlice";
 import { fetchAccessoriesAction } from "../../redux/slices/accessories/accessorySlice";
 import { useNavigate } from "react-router-dom";
+import Slide1 from "./WImg.jpg";
+// import Slide2 from "../../assets/slider2.jpg";
+// import Slide3 from "../../assets/slider3.jpg";
+// import Slide4 from "../../assets/slider4.jpg";
+
+const sliderImages = [
+  Slide1,
+  "https://images.unsplash.com/photo-1593032465174-c6b8d35072a2",
+  "https://images.unsplash.com/photo-1545239351-1141bd82e8a6",
+  "https://images.unsplash.com/photo-1531746790731-6c087fecd65a"
+];
+
+const sliderMessages = [
+  "Where elegance meets rarity",
+  "Discover timeless beauty",
+  "Elevate your style with gems",
+  "Crafted to perfection"
+];
 
 const HomePage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   const { categories = [] } = useSelector((state) => state.categories || {});
   const { accessories = [] } = useSelector((state) => state.accessories || {});
@@ -22,47 +40,62 @@ const HomePage = () => {
     dispatch(fetchAccessoriesAction());
   }, [dispatch]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <div className="bg-gradient-to-br from-purple-100 via-blue-50 to-yellow-100 min-h-screen">
+    <div className="bg-gradient-to-br from-purple-200 via-blue-100 to-yellow-200 min-h-screen">
       {/* Navbar */}
       <Navbar />
 
-      {/* Hero Banner */}
+      {/* Hero Slider */}
       <motion.div
-        initial={{ opacity: 0, y: -40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="relative text-center py-12"
+        className="relative overflow-hidden w-full h-[500px] md:h-[650px] lg:h-[950px]"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
       >
-        <div className="relative w-fit mx-auto mb-6">
-          <motion.img
-            src={welcomeImage}
-            alt="Gemora Welcome"
-            className="w-[1500px] h-[700px] rounded-xl shadow-2xl object-cover"
-            initial={{ scale: 0.95 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 1, ease: "easeOut" }}
+        {sliderImages.map((img, index) => (
+          <img
+            key={index}
+            src={img}
+            alt={`Slide ${index + 1}`}
+            className={`absolute w-full h-700 object-cover transition-opacity duration-1000 ${
+              index === currentSlide ? "opacity-100" : "opacity-0"
+            }`}
           />
-          <div className="absolute inset-0 bg-gradient-to-tr from-black/70 to-black/40 rounded-xl" />
-          <motion.div
-            className="absolute inset-0 flex flex-col justify-center items-center text-white text-center px-4"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
+        ))}
+        <div className="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-white text-center px-4">
+          {currentSlide === 0 ? (
+            <>
+              <h2 className="text-3xl md:text-5xl font-bold tracking-wide drop-shadow-xl">
+                Welcome to Gemora
+              </h2>
+              <p className="mt-3 text-lg md:text-xl text-gray-200 drop-shadow">
+                Where elegance meets rarity
+              </p>
+            </>
+          ) : (
+            <>
+              <h2 className="text-3xl md:text-5xl font-bold tracking-wide drop-shadow-xl">
+                Gemora Collection
+              </h2>
+              <p className="mt-3 text-lg md:text-xl text-gray-200 drop-shadow">
+                {sliderMessages[currentSlide]}
+              </p>
+            </>
+          )}
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            onClick={() => navigate("/products")} // Redirect
+            className="mt-5 bg-gradient-to-r from-orange-400 to-pink-500 hover:from-orange-500 hover:to-pink-600 text-white font-bold py-2 px-8 rounded-lg shadow-lg transition duration-300"
           >
-            <h2 className="text-4xl md:text-6xl font-extrabold italic tracking-wide drop-shadow-xl">
-              Welcome to Gemora
-            </h2>
-            <p className="mt-3 text-lg md:text-xl text-gray-200 drop-shadow">
-              Where elegance meets rarity
-            </p>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              className="mt-5 bg-gradient-to-r from-orange-400 to-pink-500 hover:from-orange-500 hover:to-pink-600 text-white font-bold py-2 px-8 rounded-lg shadow-lg transition duration-300"
-            >
-              Shop Now
-            </motion.button>
-          </motion.div>
+            Shop Now
+          </motion.button>
         </div>
       </motion.div>
 
@@ -85,7 +118,7 @@ const HomePage = () => {
         viewport={{ once: true }}
         className="max-w-6xl mx-auto px-4 py-16"
       >
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-indigo-800">
+        <h2 className="text-center text-3xl md:text-4xl font-bold mb-4 tracking-wider text-gray-800">
           Latest Products
         </h2>
         <HomeProductTrending />

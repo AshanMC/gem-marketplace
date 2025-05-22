@@ -100,6 +100,15 @@ const ordersLinks = [
       </svg>
     ),
   },
+  {
+    name: "Manage Requests",
+    href: "manage-requests",
+    icon: () => (
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 m-1">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-3-3v6m6.75 0A2.25 2.25 0 0118 18.75H6a2.25 2.25 0 01-2.25-2.25V6A2.25 2.25 0 016 3.75h6.586a2.25 2.25 0 011.59.659l4.415 4.415a2.25 2.25 0 01.659 1.59V16.5z" />
+      </svg>
+    ),
+  },
 ];
 
 const productsLinks = [

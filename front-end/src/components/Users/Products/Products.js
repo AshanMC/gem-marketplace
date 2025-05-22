@@ -61,7 +61,7 @@ const Products = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="bg-gradient-to-b from-white to-black min-h-screen text-white pb-10"
+      className="bg-gradient-to-br from-purple-200 via-blue-100 to-yellow-200 min-h-screen text-white pb-10"
     >
       <Navbar />
 

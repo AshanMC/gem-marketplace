@@ -9,6 +9,7 @@ const AccessorySchema = new Schema({
     soldQty: { type: Number, default: 0 },
     images: [{ type: String, required: true }],
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }]
 }, {
     timestamps: true,

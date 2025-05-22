@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 export default function ManageAccessories() {
   const dispatch = useDispatch();
-  const { accessories, loading, error } = useSelector((state) => state.accessories);
+  const { accessories = [], loading, error } = useSelector((state) => state.accessories);
 
   useEffect(() => {
     dispatch(fetchAccessoriesAction());

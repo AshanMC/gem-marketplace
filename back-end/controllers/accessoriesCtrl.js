@@ -40,8 +40,18 @@ export const getAccessoriesCtrl = asyncHandler(async (req, res) => {
 });
 
 export const getAccessoryCtrl = asyncHandler(async (req, res) => {
-    const accessory = await Accessory.findById(req.params.id);
-    res.json({ status: "success", accessory });
+  const accessory = await Accessory.findById(req.params.id)
+    .populate({
+      path: "reviews",
+      populate: { path: "user", select: "name" }
+    });
+
+  if (!accessory) {
+    res.status(404);
+    throw new Error("Accessory not found");
+  }
+
+  res.json({ status: "success", accessory });
 });
 
 export const updateAccessoryCtrl = asyncHandler(async (req, res) => {
