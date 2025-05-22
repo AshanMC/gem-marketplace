@@ -85,15 +85,15 @@ export default function Accessory() {
         </div>
 
         <div>
-          <h2 className="text-4xl font-bold text-yellow-500 mb-2">{accessory.name}</h2>
-          <p className="text-gray-500 font-semibold text-2xl mb-4">
+          <h2 className="text-4xl font-bold text-zinc-700 mb-2">{accessory.name}</h2>
+          <p className="text-orange-500 font-semibold text-2xl mb-4">
             Rs. {accessory.price?.toLocaleString()}
           </p>
-          <p className="text-gray-600 text-base mb-4">{accessory.description}</p>
-          <p className="text-green-800 mb-1">
+          <p className="text-zinc-600 text-base mb-4">{accessory.description}</p>
+          <p className="text-green-600 mb-1">
             <span className="font-semibold">Available:</span> {accessory.stockQty}
           </p>
-          <p className="text-yellow-700 mb-4">
+          <p className="text-yellow-600 mb-4">
             <span className="font-semibold">Sold:</span> {accessory.soldQty}
           </p>
 

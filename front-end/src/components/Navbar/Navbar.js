@@ -20,6 +20,7 @@ export default function Navbar() {
   const { userInfo } = useSelector((state) => state.users.userAuth || {});
   const { cartItems } = useSelector((state) => state.cart);
   const isLoggedIn = !!userInfo?.userFound;
+  const isAdmin = userInfo?.userFound?.isAdmin;
 
   const handleLogout = () => {
     dispatch(logoutUserAction());
@@ -65,6 +66,11 @@ export default function Navbar() {
                 My Requests
               </Link>
             </>
+          )}
+          {isAdmin && (
+              <Link to="/admin" className="text-sm font-semibold leading-6 text-white">
+                 Dashboard
+              </Link>                     
           )}
         </Popover.Group>
 
@@ -165,8 +171,15 @@ export default function Navbar() {
                       <Link to="/my-requests" className="block text-base font-medium text-gray-900">
                         My Requests
                       </Link>
-                    </>
+                    </>                    
                   )}
+                  {isAdmin && (
+                      <Link to="/admin" className="block text-base font-medium text-gray-900">
+                        Dashboard
+                      </Link>                     
+                  )};
+                  
+
                 </div>
 
                 <div className="space-y-6 border-t border-gray-200 py-6 px-4">

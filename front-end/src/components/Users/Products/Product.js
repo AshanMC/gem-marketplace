@@ -47,7 +47,7 @@ const Product = () => {
     return <div className="text-center text-red-500 py-10">{error}</div>;
 
   return (
-    <div className="w-full h-[900px]bg-gradient-to-br from-purple-200 via-blue-100 to-yellow-200 text-white">
+    <div className="w-full h-7bg-gradient-to-br from-purple-200 via-blue-100 to-yellow-200 text-white">
       <Navbar />
       <div className="max-w-6xl mx-auto px-6 py-12">
         <motion.div
@@ -100,7 +100,7 @@ const Product = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 200, damping: 15 }}
-              className="mt-6 w-max bg-orange-500 hover:bg-orange-600 px-6 py-2 rounded-lg font-semibold transition"
+              className="mt-6 w-max bg-green-400 hover:bg-green-500 px-6 py-2 rounded-lg font-semibold transition"
             >
               Add to Cart
             </motion.button>

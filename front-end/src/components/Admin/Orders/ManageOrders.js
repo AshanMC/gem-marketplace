@@ -50,43 +50,45 @@ export default function ManageOrders() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-100">
-              {orders.map((order) => (
-                <tr key={order._id} className="hover:bg-gray-50 transition-all">
-                  <td className="px-5 py-3 font-medium text-gray-800">{order._id}</td>
-                  <td className="px-5 py-3">{order.user?.fullname || "Unknown"}</td>
-                  <td className="px-5 py-3">Rs. {order.totalPrice}</td>
-                  <td className="px-5 py-3">
-                    {order.paymentStatus === "paid" ? (
-                      <span className="text-green-600 font-medium">Paid</span>
-                    ) : (
-                      <span className="text-red-600 font-medium">Not Paid</span>
-                    )}
-                  </td>
-                  <td className="px-5 py-3 capitalize">
-                    {order.status === "delivered" ? (
-                      <span className="text-green-600 font-semibold">Delivered</span>
-                    ) : (
-                      <span className="text-yellow-600 font-semibold">{order.status}</span>
-                    )}
-                  </td>
-                  <td className="px-5 py-3 space-x-2">
-                    {order.status !== "delivered" && (
+              {[...orders]
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .map((order) => (
+                  <tr key={order._id} className="hover:bg-gray-50 transition-all">
+                    <td className="px-5 py-3 font-medium text-gray-800">{order._id}</td>
+                    <td className="px-5 py-3">{order.user?.fullname || "Unknown"}</td>
+                    <td className="px-5 py-3">Rs. {order.totalPrice}</td>
+                    <td className="px-5 py-3">
+                      {order.paymentStatus === "paid" ? (
+                        <span className="text-green-600 font-medium">Paid</span>
+                      ) : (
+                        <span className="text-red-600 font-medium">Not Paid</span>
+                      )}
+                    </td>
+                    <td className="px-5 py-3 capitalize">
+                      {order.status === "delivered" ? (
+                        <span className="text-green-600 font-semibold">Delivered</span>
+                      ) : (
+                        <span className="text-yellow-600 font-semibold">{order.status}</span>
+                      )}
+                    </td>
+                    <td className="px-5 py-3 space-x-2">
+                      {order.status !== "delivered" && (
+                        <button
+                          onClick={() => handleMarkDelivered(order._id)}
+                          className="bg-green-500 hover:bg-green-600 text-white px-4 py-1.5 rounded-md transition"
+                        >
+                          Mark Delivered
+                        </button>
+                      )}
                       <button
-                        onClick={() => handleMarkDelivered(order._id)}
-                        className="bg-green-500 hover:bg-green-600 text-white px-4 py-1.5 rounded-md transition"
+                        onClick={() => handleDeleteOrder(order._id)}
+                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded-md transition"
                       >
-                        Mark Delivered
+                        Delete
                       </button>
-                    )}
-                    <button
-                      onClick={() => handleDeleteOrder(order._id)}
-                      className="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded-md transition"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
 

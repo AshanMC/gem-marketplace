@@ -55,11 +55,30 @@ export const getAccessoryCtrl = asyncHandler(async (req, res) => {
 });
 
 export const updateAccessoryCtrl = asyncHandler(async (req, res) => {
-    const { name, description, price, stockQty } = req.body;
-    const accessory = await Accessory.findByIdAndUpdate(req.params.id, {
-        name, description, price, stockQty
-    }, { new: true });
-    res.json({ status: "success", accessory });
+  const { name, description, price, stockQty } = req.body;
+
+  const updateData = {
+    name,
+    description,
+    price,
+    stockQty,
+  };
+
+  // If a new image was uploaded
+  if (req.files && req.files.length > 0) {
+    updateData.images = req.files.map((file) => file.path);
+  }
+
+  const accessory = await Accessory.findByIdAndUpdate(req.params.id, updateData, {
+    new: true,
+  });
+
+  if (!accessory) {
+    res.status(404);
+    throw new Error("Accessory not found");
+  }
+
+  res.json({ status: "success", accessory });
 });
 
 export const deleteAccessoryCtrl = asyncHandler(async (req, res) => {

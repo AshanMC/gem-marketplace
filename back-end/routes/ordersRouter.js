@@ -9,5 +9,5 @@ orderRouter.get("/", isLoggedIn, getAllOrdersCtrl);
 orderRouter.get("/sales/stats", isLoggedIn, getOrderStatsCtrl);               
 orderRouter.get("/:id", isLoggedIn, getSingleOrder);      
 orderRouter.put("/update/:id", isLoggedIn, updateOrderCtrl);
-orderRouter.delete("/:id", isLoggedIn, cancelOrderCtrl);  
+orderRouter.delete("/:id", isLoggedIn, cancelOrderCtrl);
 export default orderRouter;

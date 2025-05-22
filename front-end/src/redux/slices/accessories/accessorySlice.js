@@ -128,6 +128,11 @@ const accessorySlice = createSlice({
     resetAccessoryCreate: (state) => {
       state.isAdded = false;
     },
+    resetAccessoryState: (state) => {
+      state.accessory = {};
+      state.isUpdated = false;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -184,5 +189,5 @@ const accessorySlice = createSlice({
   },
 });
 
-export const { resetAccessoryCreate } = accessorySlice.actions;
+export const { resetAccessoryCreate, resetAccessoryState } = accessorySlice.actions;
 export default accessorySlice.reducer;

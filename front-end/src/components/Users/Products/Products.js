@@ -65,7 +65,7 @@ const Products = () => {
     >
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
+      <div className="text-zinc-700 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
         <motion.h1
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -114,7 +114,7 @@ const Products = () => {
             </div>
             <button
               onClick={handleClearFilters}
-              className="mt-4 bg-red-500 hover:bg-red-600 w-full text-white py-2 rounded"
+              className="mt-4 bg-red-400 hover:bg-red-600 w-full text-white py-2 rounded"
             >
               Clear Filters
             </button>
@@ -148,20 +148,20 @@ const Products = () => {
                     alt={product.name}
                     className="w-full h-52 object-cover rounded-md mb-4"
                   />
-                  <h3 className="text-lg font-bold text-white mb-1">{product.name}</h3>
-                  <p className="text-sm text-gray-300 mb-2">{product.category}</p>
+                  <h3 className="text-lg font-bold text-zink-600 mb-1">{product.name}</h3>
+                  <p className="text-sm text-gray-600 mb-2">{product.category}</p>
                   <p className="text-orange-400 font-semibold text-lg">
                     Rs.{product.price.toLocaleString()}
                   </p>
                   <button
                     onClick={() => navigate(`/products/${product._id}`)}
-                    className="mt-2 bg-purple-600 hover:bg-purple-700 w-full py-2 text-white rounded"
+                    className="mt-2 bg-orange-300 hover:bg-orange-400 w-full py-2 text-white rounded"
                   >
                     View Details
                   </button>
                   <button
                     onClick={() => handleAddToCart(product)}
-                    className="mt-2 bg-green-600 hover:bg-green-700 w-full py-2 text-white rounded"
+                    className="mt-2 bg-green-400 hover:bg-green-500 w-full py-2 text-white rounded"
                   >
                     Add to Cart
                   </button>

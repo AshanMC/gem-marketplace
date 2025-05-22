@@ -19,6 +19,7 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import logo from "../Navbar/Navlogo.png";
+import Navbar from "../Navbar/Navbar";
 const AdminDashboard = () => {
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.products);
@@ -403,9 +404,9 @@ export default function Example() {
         {/* Static sidebar for desktop */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex flex-grow flex-col overflow-y-auto bg-cyan-900 pt-5 pb-4">
+          <div className="flex flex-grow flex-col overflow-y-auto bg-gray-800 pt-5 pb-4">
             <nav
-              className="mt-5 flex flex-1 flex-col divide-y divide-cyan-800 overflow-y-auto"
+              className="mt-5 flex flex-1 flex-col divide-y divide-pink-700 overflow-y-auto"
               aria-label="Sidebar">
               {/* orders links desktop */}
               <div className="mt-1 pt-1">
@@ -478,10 +479,6 @@ export default function Example() {
                   ))}
                 </div>
               </div>
-              {/* colors links desktop */}
-              <div className="mt-3 pt-3">
-              </div>
-              {/* brands links desktop */}
               <div className="mt-3 pt-3">
                 <div className="space-y-1 px-2">
                   {accessoriesLinks.map((item) => (
@@ -514,7 +511,7 @@ export default function Example() {
           </div>
           <main className="flex-1 pb-8">
             {/* Page header */}
-            <div className="bg-white shadow">
+            <div className="bg-zinc-700 shadow">
               <div className="px-4 sm:px-6 lg:mx-auto lg:max-w-6xl lg:px-8">
                 <div className="py-6 md:flex md:items-center md:justify-between lg:border-t lg:border-gray-200">
                   <div className="min-w-0 flex-1">
@@ -522,18 +519,18 @@ export default function Example() {
                     <div className="flex items-center">
                       <img
                         className="hidden h-16 w-16 rounded-full sm:block"
-                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.6&w=256&h=256&q=80"
+                        src="https://res.cloudinary.com/dcj5ifk4o/image/upload/v1747931630/google_admin_icon_131692_jfaokj.webp"
                         alt=""
                       />
                       <div>
                         <div className="flex items-center">
                           <img
                             className="h-16 w-16 rounded-full sm:hidden"
-                            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.6&w=256&h=256&q=80"
+                            src="https://res.cloudinary.com/dcj5ifk4o/image/upload/v1747931630/google_admin_icon_131692_jfaokj.webp"
                             alt=""
                           />
                           <h1 className="ml-3 text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:leading-9">
-                            Good morning, Emilia Birch
+                            Welcome, Ashan Madushanka
                           </h1>
                         </div>
                         <dl className="mt-6 flex flex-col sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
@@ -559,7 +556,7 @@ export default function Example() {
                                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                               />
                             </svg>
-                            Date Joined: 12/12/2020
+                            Date Joined: 09/05/2025
                           </dd>
                           {/* email */}
                           <dd className="mt-3 flex items-center text-sm font-medium  text-gray-500 sm:mr-6 sm:mt-0">
@@ -577,18 +574,6 @@ export default function Example() {
                       </div>
                     </div>
                   </div>
-                  {/* <div className="mt-6 flex space-x-3 md:mt-0 md:ml-4">
-                    <button
-                      type="button"
-                      className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2">
-                      Add money
-                    </button>
-                    <button
-                      type="button"
-                      className="inline-flex items-center rounded-md border border-transparent bg-cyan-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2">
-                      Send money
-                    </button>
-                  </div> */}
                 </div>
               </div>
             </div>

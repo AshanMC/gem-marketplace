@@ -21,7 +21,7 @@ export default function Articles() {
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* Heading */}
         <motion.h1
-          className="text-4xl font-extrabold text-center mb-12"
+          className="text-zinc-700 text-4xl font-extrabold text-center mb-12"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -31,7 +31,7 @@ export default function Articles() {
 
         {/* Loading / Error */}
         {loading && (
-          <p className="text-center text-lg text-gray-200">Loading articles...</p>
+          <p className="text-center text-lg text-gray-500">Loading articles...</p>
         )}
         {error && (
           <p className="text-center text-red-400 font-medium">{error}</p>
@@ -53,10 +53,10 @@ export default function Articles() {
                   alt={article.title}
                   className="w-full h-48 object-cover rounded-lg mb-4"
                 />
-                <h2 className="text-xl font-bold text-white line-clamp-2">
+                <h2 className="text-xl font-bold text-zinc-600 line-clamp-2">
                   {article.title}
                 </h2>
-                <p className="text-sm text-gray-300 mt-2 line-clamp-3">
+                <p className="text-sm text-gray-600 mt-2 line-clamp-3">
                   {article.description}
                 </p>
                 <p className="mt-4 text-orange-400 text-sm font-semibold hover:underline">

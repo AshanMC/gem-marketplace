@@ -9,7 +9,7 @@ const accessoryRouter = express.Router();
 accessoryRouter.post("/", isLoggedIn, upload.array("files"), isAdmin, createAccessoryCtrl);
 accessoryRouter.get("/", getAccessoriesCtrl);
 accessoryRouter.get("/:id", getAccessoryCtrl);
-accessoryRouter.put("/:id", isLoggedIn, isAdmin, updateAccessoryCtrl);
+accessoryRouter.put("/:id", isLoggedIn, isAdmin, upload.array("files"), updateAccessoryCtrl);
 accessoryRouter.delete("/:id", isLoggedIn, isAdmin, deleteAccessoryCtrl);
 
 export default accessoryRouter;

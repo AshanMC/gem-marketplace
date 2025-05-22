@@ -48,7 +48,7 @@ const Accessories = () => {
 
       <div className="max-w-7xl mx-auto px-4 pt-28 pb-10">
         <motion.h1
-          className="text-4xl font-bold text-center mb-10"
+          className="text-zinc-700 text-4xl font-bold text-center mb-10"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -59,13 +59,13 @@ const Accessories = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
           {/* Sidebar: Price Filter */}
           <motion.div
-            className="bg-white/10 backdrop-blur p-6 rounded-xl shadow-lg"
+            className="bg-transparent backdrop-blur p-6 rounded-xl shadow-lg"
             initial={{ opacity: 0, x: -40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-xl font-semibold mb-4">Filter by Price</h2>
-            <label className="block text-sm mb-2">
+            <h2 className="text-zinc-700 text-xl font-semibold mb-4">Filter by Price</h2>
+            <label className="text-zinc-700 block text-sm mb-2">
               Max Price: Rs.{priceRange[1].toLocaleString()}
             </label>
             <input
@@ -78,7 +78,7 @@ const Accessories = () => {
             />
             <button
               onClick={clearFilters}
-              className="mt-4 bg-red-500 hover:bg-red-600 w-full text-white py-2 rounded"
+              className="mt-4 bg-red-400 hover:bg-red-600 w-full text-white py-2 rounded"
             >
               Clear Filters
             </button>
@@ -109,18 +109,18 @@ const Accessories = () => {
                     alt={item.name}
                     className="w-full h-52 object-cover rounded-md mb-4"
                   />
-                  <h3 className="text-lg font-bold text-white mb-1">{item.name}</h3>
-                  <p className="text-sm text-gray-300 mb-2">{item.description}</p>
+                  <h3 className="text-lg font-bold text-zinc-600 mb-1">{item.name}</h3>
+                  <p className="text-sm text-zinc-600 mb-2">{item.description}</p>
                   <p className="text-orange-400 font-semibold text-lg">Rs.{item.price}</p>
                   <button
                     onClick={() => navigate(`/accessories/${item._id}`)}
-                    className="mt-3 bg-purple-600 hover:bg-purple-700 w-full py-2 text-white rounded transition"
+                    className="mt-3 bg-orange-300 hover:bg-orange-400 w-full py-2 text-white rounded transition"
                   >
                     View Details
                   </button>
                   <button
                     onClick={() => handleAddToCart(item)}
-                    className="mt-2 bg-green-600 hover:bg-green-700 w-full py-2 text-white rounded"
+                    className="mt-2 bg-green-400 hover:bg-green-500 w-full py-2 text-white rounded"
                   >
                     Add to Cart
                   </button>
