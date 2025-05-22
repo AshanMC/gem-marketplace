@@ -9,21 +9,21 @@ import { fetchCategoriesAction } from "../../redux/slices/categories/categorySli
 import { fetchAccessoriesAction } from "../../redux/slices/accessories/accessorySlice";
 import { useNavigate } from "react-router-dom";
 import Slide1 from "./WImg.jpg";
-// import Slide2 from "../../assets/slider2.jpg";
-// import Slide3 from "../../assets/slider3.jpg";
-// import Slide4 from "../../assets/slider4.jpg";
+import Slide2 from "./WImg2.jpg";
+import Slide3 from "./WImg3.jpg";
+import Slide4 from "./WImg4.jpg";
 
 const sliderImages = [
+  Slide2,
   Slide1,
-  "https://images.unsplash.com/photo-1593032465174-c6b8d35072a2",
-  "https://images.unsplash.com/photo-1545239351-1141bd82e8a6",
-  "https://images.unsplash.com/photo-1531746790731-6c087fecd65a"
+  Slide3,
+  Slide4,
 ];
 
 const sliderMessages = [
   "Where elegance meets rarity",
-  "Discover timeless beauty",
-  "Elevate your style with gems",
+  "Trusted By All Over The World",
+  "Gems For Jewellery",
   "Crafted to perfection"
 ];
 
@@ -118,7 +118,7 @@ const HomePage = () => {
         viewport={{ once: true }}
         className="max-w-6xl mx-auto px-4 py-16"
       >
-        <h2 className="text-center text-3xl md:text-4xl font-bold mb-4 tracking-wider text-gray-800">
+        <h2 className="text-center text-3xl md:text-4xl font-bold mb-4 tracking-wider text-zinc-700">
           Latest Products
         </h2>
         <HomeProductTrending />
@@ -133,7 +133,7 @@ const HomePage = () => {
         className="bg-white/30 backdrop-blur-sm py-16"
       >
         <section className="text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-wider text-gray-800">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-wider text-zinc-700">
             Shop by Accessory
           </h2>
           <p className="text-lg text-gray-600 mb-10">
@@ -152,10 +152,10 @@ const HomePage = () => {
                   alt={item.name}
                   className="h-44 w-full object-cover rounded-md mb-4"
                 />
-                <h3 className="text-xl font-semibold text-indigo-900 mb-1 truncate">
+                <h3 className="text-xl  font-bold text-stone-500 mb-1 truncate">
                   {item.name}
                 </h3>
-                <p className="text-gray-700 text-sm line-clamp-2">
+                <p className="text-stone-700 text-sm line-clamp-2">
                   {item.description}
                 </p>
               </motion.div>

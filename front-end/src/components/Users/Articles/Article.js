@@ -18,7 +18,7 @@ export default function Article() {
   if (error) return <p className="p-6 text-center text-red-400">{error}</p>;
 
   return (
-    <div className="bg-gradient-to-b from-white to-black min-h-screen text-white">
+    <div className="bg-gradient-to-br from-purple-200 via-blue-100 to-yellow-200 min-h-screen text-white">
       <Navbar />
 
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
@@ -38,7 +38,7 @@ export default function Article() {
             />
 
             <motion.h1
-              className="text-4xl font-bold mb-6"
+              className="text-slate-600 text-4xl font-bold mb-6"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
@@ -47,7 +47,7 @@ export default function Article() {
             </motion.h1>
 
             <motion.p
-              className="text-lg text-gray-200 leading-relaxed whitespace-pre-line"
+              className="text-zinc-500 text-lg  leading-relaxed whitespace-pre-line"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.8 }}

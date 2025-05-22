@@ -190,6 +190,7 @@ export const getOrderStatsCtrl = asyncHandler(async (req, res) => {
         },
     },
    ]);
+   
    //get the date
    const date = new Date();
    const today = new Date(date.getFullYear(), date.getMonth(), date.getDate());

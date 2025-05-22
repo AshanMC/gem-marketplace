@@ -3,7 +3,6 @@ import HomePage from "./components/HomePage/HomePage";
 import Product from "./components/Users/Products/Product";
 import OrderPayment from "./components/Users/Products/OrderPayment";
 import ShoppingCart from "./components/Users/Products/ShoppingCart";
-import ThanksForOrdering from "./components/Users/Products/ThanksForOrdering";
 import Login from "./components/Users/Forms/Login";
 import RegisterForm from "./components/Users/Forms/RegisterForm";
 import Products from "./components/Users/Products/Products";
@@ -15,6 +14,8 @@ import CategoryToAdd from "./components/Users/Profile/CustomerProfile";
 import RequestGem from "./components/Users/Forms/RequestGem";
 import MyRequests from "./components/Users/Profile/MyRequests";
 import ManageRequests from "./components/Admin/gemRequests/ManageRequests";
+import Success from "./components/Success";
+import AboutUs from "./components/AboutUs";
 
 
 // Admin Components
@@ -53,12 +54,13 @@ function App() {
         <Route path="/shopping-cart" element={<ShoppingCart />} />
         <Route path="/cart" element={<ShoppingCart />} />
         <Route path="/order-payment" element={<OrderPayment />} />
-        <Route path="/thanks" element={<ThanksForOrdering />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/customer-profile" element={<CustomerProfile />} />
         <Route path="/gem-request" element={<RequestGem />} />
         <Route path="/my-requests" element={<MyRequests />} />
+        <Route path="/success" element={<Success />} />
+        <Route path="/about-us" element={<AboutUs />} />
 
         {/* Admin Routes */}
         <Route

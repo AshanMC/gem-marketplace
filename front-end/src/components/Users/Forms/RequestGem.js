@@ -72,8 +72,8 @@ export default function RequestGem() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 via-blue-50 to-yellow-100 py-10 px-4">
-      <div className="max-w-2xl mx-auto bg-white shadow-xl rounded-xl p-8">
-        <h2 className="text-3xl font-bold text-indigo-700 mb-6 text-center">
+      <div className="max-w-2xl mx-auto bg-gradient-to-r from-zinc-300 via-gray-300 to-slate-300 shadow-xl rounded-xl p-8">
+        <h2 className="text-3xl font-bold text-zinc-700 mb-6 text-center">
           Request a Custom Gem
         </h2>
         <form onSubmit={onSubmit} className="space-y-5">
@@ -155,7 +155,7 @@ export default function RequestGem() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-orange-400 via-pink-500 to-red-500 hover:from-orange-500 hover:to-red-600 text-white py-3 rounded-md text-lg font-semibold shadow-lg transition"
+            className="w-full bg-gradient-to-r from-gray-400 via-white to-gray-400 hover:from-gray-400  hover:to-zinc-400  text-zinc-500 py-3 rounded-md text-lg font-semibold shadow-lg transition"
           >
             {loading ? "Submitting..." : "Submit Request"}
           </button>

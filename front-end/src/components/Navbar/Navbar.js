@@ -72,6 +72,9 @@ export default function Navbar() {
                  Dashboard
               </Link>                     
           )}
+          <Link to="/about-us" className="text-sm font-semibold leading-6 text-white">
+            About Us
+          </Link>
         </Popover.Group>
 
         <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
@@ -178,6 +181,9 @@ export default function Navbar() {
                         Dashboard
                       </Link>                     
                   )};
+                  <Link to="/about-us" className="text-sm font-semibold leading-6 text-white">
+                    About Us
+                  </Link>
                   
 
                 </div>

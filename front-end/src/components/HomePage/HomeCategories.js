@@ -18,7 +18,7 @@ const HomeCategories = () => {
 
   return (
     <section className="py-12 px-4 max-w-6xl mx-auto">
-      <h2 className="text-3xl font-bold text-center text-white mb-8">
+      <h2 className="text-3xl font-bold text-center text-zinc-700 mb-8">
         Browse by Categories
       </h2>
 
@@ -39,7 +39,7 @@ const HomeCategories = () => {
     <Link
       key={category._id}
       to={`/products-filters?category=${category.name}`}
-      className="bg-white/10 backdrop-blur-md text-white p-6 rounded-lg shadow hover:shadow-xl transition transform hover:scale-105"
+      className="bg-white/10 backdrop-blur-md text-stone-500 p-6 rounded-lg shadow hover:shadow-xl transition transform hover:scale-105"
     >
       <img
         src={imageUrl}
