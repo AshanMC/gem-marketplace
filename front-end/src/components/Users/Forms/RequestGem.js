@@ -13,6 +13,7 @@ export default function RequestGem() {
     gemName: "",
     weight: "",
     description: "",
+    phone:"",
     neededDate: "",
     minPrice: "",
     maxPrice: "",
@@ -23,7 +24,7 @@ export default function RequestGem() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const { gemName, weight, description, neededDate, minPrice, maxPrice } = formData;
+    const { gemName, weight, description, phone, neededDate, minPrice, maxPrice } = formData;
     const expectedPrice = `${minPrice} - ${maxPrice}`;
 
     try {
@@ -32,8 +33,10 @@ export default function RequestGem() {
           gemName,
           weight: parseFloat(weight),
           description,
+          phone,
           neededDate,
           expectedPrice,
+          
         })
       ).unwrap();
 
@@ -56,6 +59,7 @@ export default function RequestGem() {
         gemName: "",
         weight: "",
         description: "",
+        phone: "",
         neededDate: "",
         minPrice: "",
         maxPrice: "",
@@ -149,6 +153,18 @@ export default function RequestGem() {
               onChange={onChange}
               rows={4}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-400 resize-none"
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700 font-semibold mb-1">Phone Number</label>
+            <input
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              required
+              onChange={onChange}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-400"
+              placeholder="e.g. 0771234567"
             />
           </div>
 

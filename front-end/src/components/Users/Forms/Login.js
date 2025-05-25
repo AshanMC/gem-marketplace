@@ -55,7 +55,7 @@ const Login = () => {
           <h3 className="text-4xl font-bold text-gray-800 mb-4">
             Login to Your Account
           </h3>
-          <p className="text-gray-500 mb-8">Welcome back, we've missed you!</p>
+          <p className="text-gray-500 mb-8">Welcome back!</p>
 
           {error && <ErrorMsg message={error} />}
 
@@ -92,7 +92,7 @@ const Login = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   type="submit"
-                  className="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 text-white py-3 rounded-md text-lg font-semibold shadow-lg transition"
+                  className="w-full bg-gradient-to-r from-purple-300 via-pink-300 to-red-300 hover:from-purple-400 hover:via-pink-400 hover:to-red-400 text-white py-3 rounded-md text-lg font-semibold shadow-lg transition"
                 >
                   Login
                 </motion.button>
@@ -120,7 +120,7 @@ const Login = () => {
           className="hidden md:block bg-cover bg-center"
           style={{
             backgroundImage:
-              'url("https://cdn.pixabay.com/photo/2017/03/29/04/47/high-heels-2184095_1280.jpg")',
+              'url("https://res.cloudinary.com/dcj5ifk4o/image/upload/v1748164749/788134_lyz1rg.jpg")',
           }}
         ></motion.div>
       </div>

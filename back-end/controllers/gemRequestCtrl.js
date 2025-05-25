@@ -5,13 +5,14 @@ import GemRequest from "../model/gemRequestModel.js";
 // @route   POST /api/v1/requests
 // @access  Private
 export const createGemRequest = asyncHandler(async (req, res) => {
-  const { gemName, weight, description, neededDate, expectedPrice } = req.body;
+  const { gemName, weight, description, neededDate, expectedPrice, phone } = req.body;
 
   const request = await GemRequest.create({
     user: req.userAuthId,
     gemName,
     weight,
     description,
+    phone,
     neededDate,
     expectedPrice,
   });

@@ -122,7 +122,7 @@ const RegisterForm = () => {
           className="hidden md:block bg-cover bg-center"
           style={{
             backgroundImage:
-              'url("https://cdn.pixabay.com/photo/2017/03/29/04/47/high-heels-2184095_1280.jpg")',
+              'url("https://res.cloudinary.com/dcj5ifk4o/image/upload/v1747516887/Gem%20Marketplace/jazil50cxnravlmhcmxm.jpg")',
           }}
         ></motion.div>
       </div>

@@ -77,7 +77,7 @@ const Product = () => {
             transition={{ duration: 0.8 }}
             className="flex flex-col justify-center space-y-4"
           >
-            <h1 className="text-4xl font-bold tracking-wide">{product?.name}</h1>
+            <h1 className="text-4xl text-gray-600 font-bold tracking-wide">{product?.name}</h1>
             <p className="text-2xl text-orange-500 font-semibold">
               Rs. {product?.price}
             </p>

@@ -19,6 +19,10 @@ const gemRequestSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    phone: {
+      type: String,
+      required: true,
+    },
     neededDate: {
       type: Date,
       required: true,

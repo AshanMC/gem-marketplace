@@ -87,6 +87,9 @@ export default function ManageRequests() {
               <strong>Description:</strong> {req.description}
             </p>
             <p>
+              <strong>Phone:</strong> {req.phone}
+            </p>
+            <p>
               <strong>Status:</strong>{" "}
               <span
                 className={`font-semibold ${

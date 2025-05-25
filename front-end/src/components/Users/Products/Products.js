@@ -72,7 +72,7 @@ const Products = () => {
           transition={{ duration: 0.7 }}
           className="text-4xl font-bold text-center mb-10"
         >
-          Our Products
+          Our Gemstones
         </motion.h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">

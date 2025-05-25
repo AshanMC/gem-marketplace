@@ -49,7 +49,7 @@ export default function Navbar() {
 
         <Popover.Group className="hidden lg:flex lg:gap-x-12">
           <Link to="/products" className="text-sm font-semibold leading-6 text-white">
-            Products
+            Gemstones
           </Link>
           <Link to="/accessories" className="text-sm font-semibold leading-6 text-white">
             Accessories
@@ -158,7 +158,7 @@ export default function Navbar() {
 
                 <div className="space-y-6 border-t border-gray-200 py-6 px-4">
                   <Link to="/products" className="block text-base font-medium text-gray-900">
-                    Products
+                    Gemstones
                   </Link>
                   <Link to="/accessories" className="block text-base font-medium text-gray-900">
                     Accessories
